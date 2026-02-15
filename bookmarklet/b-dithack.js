@@ -1,1 +1,1 @@
-javascript: (function () {let s = document.createElement("script");s.src = "https://adithyawijaya.github.io/QuizHack/dithack.js?v=" + Date.now();document.head.appendChild(s);})();
+javascript: (function () {let s = document.createElement("script");s.src = "https://adithyawijaya.github.io/DitExam//dithack.js?v=" + Date.now();document.head.appendChild(s);})();
