@@ -128,18 +128,6 @@
         console.log('[Bypass] Simulating blur state');
     };
 
-    // Prevent pages from detecting visibility changes via polling
-    let originalHidden = false;
-    Object.defineProperty(document, 'hidden', {
-        get: function() { 
-            return false; 
-        },
-        set: function(value) {
-            originalHidden = value;
-        },
-        configurable: true
-    });
-
     console.log('[Bypass] Page Visibility API & blur/focus events bypass loaded');
 
     // Create GUI Popup
