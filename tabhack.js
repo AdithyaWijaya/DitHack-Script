@@ -141,4 +141,110 @@
     });
 
     console.log('[Bypass] Page Visibility API & blur/focus events bypass loaded');
+
+    // Create GUI Popup
+    function createPopup() {
+        // Remove existing popup if any
+        const existingPopup = document.getElementById('tabhack-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+            return;
+        }
+
+        // Create main popup container
+        const popup = document.createElement('div');
+        popup.id = 'tabhack-popup';
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 30px 40px;
+            border-radius: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 999999;
+            text-align: center;
+            min-width: 300px;
+            border: 2px solid #0f3460;
+        `;
+
+        // Author name header
+        const authorText = document.createElement('div');
+        authorText.innerHTML = '<strong>Author</strong><br>xDitt4GT++';
+        authorText.style.cssText = `
+            font-size: 14px;
+            color: #00d9ff;
+            margin-bottom: 15px;
+            line-height: 1.8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        `;
+
+        // Status message
+        const statusText = document.createElement('div');
+        statusText.innerHTML = '✅ <strong>TabHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Page Visibility API Bypassed</span>';
+        statusText.style.cssText = `
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        `;
+
+        // Close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕ Close';
+        closeBtn.style.cssText = `
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        `;
+
+        // Hover effect for close button
+        closeBtn.onmouseenter = function() {
+            this.style.background = '#ff6b6b';
+            this.style.transform = 'scale(1.05)';
+        };
+        closeBtn.onmouseleave = function() {
+            this.style.background = '#e94560';
+            this.style.transform = 'scale(1)';
+        };
+
+        // Close button click event
+        closeBtn.onclick = function() {
+            popup.remove();
+        };
+
+        // Assemble popup
+        popup.appendChild(authorText);
+        popup.appendChild(statusText);
+        popup.appendChild(closeBtn);
+
+        // Add to body
+        document.body.appendChild(popup);
+
+        // Add fade-in animation
+        popup.style.opacity = '0';
+        popup.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => {
+            popup.style.opacity = '1';
+        }, 10);
+    }
+
+    // Create popup when script is activated
+    createPopup();
+
+    // Expose function to toggle popup manually
+    window.toggleTabHackPopup = function() {
+        createPopup();
+    };
 })();
