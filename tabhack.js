@@ -161,7 +161,7 @@
 
         // Author name header
         const authorText = document.createElement('div');
-        authorText.innerHTML = '<strong>Developer</strong><br>ADIT ENGINEER KUPANG';
+        authorText.innerHTML = '<strong>Developer</strong><br>ADIT! ENGINEER Manggeray';
         authorText.style.cssText = `
             font-size: 14px;
             color: #00d9ff;
@@ -250,3 +250,4 @@
         createPopup();
     };
 })();
+
