@@ -161,7 +161,7 @@
 
         // Author name header
         const authorText = document.createElement('div');
-        authorText.innerHTML = '<strong>Author</strong><br>xDitt4GT++';
+        authorText.innerHTML = '<strong>Developer</strong><br>ADIT ENGINEER KUPANG';
         authorText.style.cssText = `
             font-size: 14px;
             color: #00d9ff;
@@ -173,11 +173,24 @@
 
         // Status message
         const statusText = document.createElement('div');
-        statusText.innerHTML = '✅ <strong>TabHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Page Visibility API Bypassed</span>';
+        statusText.innerHTML = '✅ <strong>DitHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Page Visibility API Bypassed</span>';
         statusText.style.cssText = `
             font-size: 18px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        `;
+
+        // Warning message
+        const warningText = document.createElement('div');
+        warningText.innerHTML = '⚠️ <strong>JANGAN REFRESH!</strong><br><span style="font-size: 11px; color: #ff6b6b;">Refresh akan membuat script tidak berfungsi!</span>';
+        warningText.style.cssText = `
+            font-size: 14px;
             margin-bottom: 20px;
             line-height: 1.6;
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border: 1px solid #ff6b6b;
         `;
 
         // Close button
@@ -215,6 +228,7 @@
         // Assemble popup
         popup.appendChild(authorText);
         popup.appendChild(statusText);
+        popup.appendChild(warningText);
         popup.appendChild(closeBtn);
 
         // Add to body
