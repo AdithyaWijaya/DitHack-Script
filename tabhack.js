@@ -1,5 +1,6 @@
 // Bypass Page Visibility API & Event blur & focus
-// Author : xDitt4GT++
+// Author : ADITHYA
+
 (function() {
     'use strict';
 
@@ -128,7 +129,297 @@
         console.log('[Bypass] Simulating blur state');
     };
 
+    // =====================================================
+    // Bypass Window Resizing Detection
+    // =====================================================
+    
+    // Override window.onresize
+    Object.defineProperty(window, 'onresize', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it - bypass resize detection
+        },
+        configurable: false
+    });
+
+    // Block resize event listeners
+    const originalWindowAddEventListenerResize = window.addEventListener;
+    window.addEventListener = function(type, listener, options) {
+        if (type === 'resize') {
+            console.log('[Bypass] Blocked resize event listener');
+            return;
+        }
+        // Pass through to original addEventListener for other events
+        return originalAddEventListener.call(this, type, listener, options);
+    };
+
+    // Override EventTarget.prototype.addEventListener for resize
+    if (EventTarget && EventTarget.prototype) {
+        const originalEventTargetAddEventListenerResize = EventTarget.prototype.addEventListener;
+        
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+            if (type === 'resize') {
+                console.log('[Bypass] Blocked EventTarget.resize event listener');
+                return;
+            }
+            // Also handle blur/focus/visibilitychange in the same override
+            if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
+                console.log('[Bypass] Blocked EventTarget.' + type + ' event listener');
+                return;
+            }
+            return originalEventTargetAddEventListenerResize.call(this, type, listener, options);
+        };
+    }
+
+    // Mock window dimensions to prevent size detection
+    let mockWidth = window.innerWidth;
+    let mockHeight = window.innerHeight;
+
+    Object.defineProperty(window, 'innerWidth', {
+        get: function() {
+            return mockWidth;
+        },
+        configurable: true
+    });
+
+    Object.defineProperty(window, 'innerHeight', {
+        get: function() {
+            return mockHeight;
+        },
+        configurable: true
+    });
+
+    Object.defineProperty(window, 'outerWidth', {
+        get: function() {
+            return mockWidth;
+        },
+        configurable: true
+    });
+
+    Object.defineProperty(window, 'outerHeight', {
+        get: function() {
+            return mockHeight;
+        },
+        configurable: true
+    });
+
+    // Override screen properties
+    Object.defineProperty(screen, 'width', {
+        get: function() {
+            return 1920;
+        },
+        configurable: true
+    });
+
+    Object.defineProperty(screen, 'height', {
+        get: function() {
+            return 1080;
+        },
+        configurable: true
+    });
+
+    Object.defineProperty(screen, 'availWidth', {
+        get: function() {
+            return 1920;
+        },
+        configurable: true
+    });
+
+    Object.defineProperty(screen, 'availHeight', {
+        get: function() {
+            return 1040;
+        },
+        configurable: true
+    });
+
+    // Mock function to set custom dimensions
+    window.setMockDimensions = function(width, height) {
+        mockWidth = width;
+        mockHeight = height;
+        console.log('[Bypass] Mock dimensions set to: ' + width + 'x' + height);
+    };
+
+    // =====================================================
+    // Bypass Full Screen Detection
+    // =====================================================
+
+    // Override document.fullscreenElement
+    Object.defineProperty(document, 'fullscreenElement', {
+        get: function() {
+            return document.createElement('div'); // Return a fake element
+        },
+        configurable: false
+    });
+
+    // Override document.fullscreenEnabled
+    Object.defineProperty(document, 'fullscreenEnabled', {
+        get: function() {
+            return false;
+        },
+        configurable: false
+    });
+
+    // Override document.onfullscreenchange
+    Object.defineProperty(document, 'onfullscreenchange', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it
+        },
+        configurable: false
+    });
+
+    // Override document.onfullscreenerror
+    Object.defineProperty(document, 'onfullscreenerror', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it
+        },
+        configurable: false
+    });
+
+    // Block fullscreenchange and fullscreenerror event listeners
+    const originalAddEventListenerFS = window.addEventListener;
+    window.addEventListener = function(type, listener, options) {
+        if (type === 'fullscreenchange') {
+            console.log('[Bypass] Blocked fullscreenchange event listener');
+            return;
+        }
+        if (type === 'fullscreenerror') {
+            console.log('[Bypass] Blocked fullscreenerror event listener');
+            return;
+        }
+        if (type === 'resize') {
+            console.log('[Bypass] Blocked resize event listener');
+            return;
+        }
+        if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
+            console.log('[Bypass] Blocked ' + type + ' event listener');
+            return;
+        }
+        return originalAddEventListener.call(this, type, listener, options);
+    };
+
+    // Also override document.addEventListener
+    const originalDocumentAddEventListener = document.addEventListener;
+    document.addEventListener = function(type, listener, options) {
+        if (type === 'fullscreenchange') {
+            console.log('[Bypass] Blocked document fullscreenchange event listener');
+            return;
+        }
+        if (type === 'fullscreenerror') {
+            console.log('[Bypass] Blocked document fullscreenerror event listener');
+            return;
+        }
+        if (type === 'resize') {
+            console.log('[Bypass] Blocked document resize event listener');
+            return;
+        }
+        if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
+            console.log('[Bypass] Blocked document ' + type + ' event listener');
+            return;
+        }
+        return originalDocumentAddEventListener.call(this, type, listener, options);
+    };
+
+    // Override EventTarget.prototype.addEventListener for fullscreen events
+    if (EventTarget && EventTarget.prototype) {
+        const originalEventTargetAddEventListenerFS = EventTarget.prototype.addEventListener;
+        
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+            if (type === 'fullscreenchange') {
+                console.log('[Bypass] Blocked EventTarget.fullscreenchange event listener');
+                return;
+            }
+            if (type === 'fullscreenerror') {
+                console.log('[Bypass] Blocked EventTarget.fullscreenerror event listener');
+                return;
+            }
+            if (type === 'resize') {
+                console.log('[Bypass] Blocked EventTarget.resize event listener');
+                return;
+            }
+            if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
+                console.log('[Bypass] Blocked EventTarget.' + type + ' event listener');
+                return;
+            }
+            return originalEventTargetAddEventListenerFS.call(this, type, listener, options);
+        };
+    }
+
+    // Override requestFullscreen methods
+    const originalRequestFullscreen = Element.prototype.requestFullscreen;
+    Element.prototype.requestFullscreen = function() {
+        console.log('[Bypass] Blocked requestFullscreen call');
+        return Promise.reject(new Error('Fullscreen request blocked'));
+    };
+
+    // Override exitFullscreen
+    const originalExitFullscreen = document.exitFullscreen;
+    document.exitFullscreen = function() {
+        console.log('[Bypass] Blocked exitFullscreen call');
+        return Promise.resolve();
+    };
+
+    // Override webkit specific methods (for Safari/Chrome)
+    if (Element.prototype.webkitRequestFullscreen) {
+        const originalWebkitRequestFullscreen = Element.prototype.webkitRequestFullscreen;
+        Element.prototype.webkitRequestFullscreen = function() {
+            console.log('[Bypass] Blocked webkitRequestFullscreen call');
+            return Promise.reject(new Error('Fullscreen request blocked'));
+        };
+    }
+
+    if (document.webkitExitFullscreen) {
+        const originalWebkitExitFullscreen = document.webkitExitFullscreen;
+        document.webkitExitFullscreen = function() {
+            console.log('[Bypass] Blocked webkitExitFullscreen call');
+            return Promise.resolve();
+        };
+    }
+
+    // Override moz specific methods (for Firefox)
+    if (Element.prototype.mozRequestFullScreen) {
+        const originalMozRequestFullScreen = Element.prototype.mozRequestFullScreen;
+        Element.prototype.mozRequestFullScreen = function() {
+            console.log('[Bypass] Blocked mozRequestFullScreen call');
+            return Promise.reject(new Error('Fullscreen request blocked'));
+        };
+    }
+
+    if (document.mozExitFullScreen) {
+        const originalMozExitFullScreen = document.mozExitFullScreen;
+        document.mozExitFullScreen = function() {
+            console.log('[Bypass] Blocked mozExitFullScreen call');
+            return Promise.resolve();
+        };
+    }
+
+    // Override ms specific methods (for IE/Edge)
+    if (Element.prototype.msRequestFullscreen) {
+        const originalMsRequestFullscreen = Element.prototype.msRequestFullscreen;
+        Element.prototype.msRequestFullscreen = function() {
+            console.log('[Bypass] Blocked msRequestFullscreen call');
+            return Promise.reject(new Error('Fullscreen request blocked'));
+        };
+    }
+
+    if (document.msExitFullscreen) {
+        const originalMsExitFullscreen = document.msExitFullscreen;
+        document.msExitFullscreen = function() {
+            console.log('[Bypass] Blocked msExitFullscreen call');
+            return Promise.resolve();
+        };
+    }
+
     console.log('[Bypass] Page Visibility API & blur/focus events bypass loaded');
+    console.log('[Bypass] Window Resizing bypass loaded');
+    console.log('[Bypass] Full Screen Detection bypass loaded');
 
     // Create GUI Popup
     function createPopup() {
