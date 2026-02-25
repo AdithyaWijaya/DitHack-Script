@@ -421,6 +421,80 @@
     console.log('[Bypass] Window Resizing bypass loaded');
     console.log('[Bypass] Full Screen Detection bypass loaded');
 
+    // =====================================================
+    // Bypass Right Click (Context Menu) Detection
+    // =====================================================
+
+    // Override document.oncontextmenu
+    Object.defineProperty(document, 'oncontextmenu', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it - bypass context menu detection
+        },
+        configurable: false
+    });
+
+    // Override window.oncontextmenu
+    Object.defineProperty(window, 'oncontextmenu', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it - bypass context menu detection
+        },
+        configurable: false
+    });
+
+    // Block contextmenu event listeners
+    window.addEventListener = function(type, listener, options) {
+        if (type === 'contextmenu') {
+            console.log('[Bypass] Blocked contextmenu event listener');
+            return;
+        }
+        // Pass through to original addEventListener for other events
+        return originalAddEventListener.call(this, type, listener, options);
+    };
+
+    // Also override document.addEventListener for contextmenu
+    document.addEventListener = function(type, listener, options) {
+        if (type === 'contextmenu') {
+            console.log('[Bypass] Blocked document contextmenu event listener');
+            return;
+        }
+        return originalDocumentAddEventListener.call(this, type, listener, options);
+    };
+
+    // Override EventTarget.prototype.addEventListener for contextmenu
+    if (EventTarget && EventTarget.prototype) {
+        const originalEventTargetAddEventListenerCTX = EventTarget.prototype.addEventListener;
+        
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+            if (type === 'contextmenu') {
+                console.log('[Bypass] Blocked EventTarget.contextmenu event listener');
+                return;
+            }
+            // Pass through to original for other events
+            return originalEventTargetAddEventListenerFS.call(this, type, listener, options);
+        };
+    }
+
+    // Prevent default context menu on document
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        console.log('[Bypass] Prevented context menu');
+        return false;
+    }, true);
+
+    // Also prevent on window level
+    window.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    }, true);
+
+    console.log('[Bypass] Right Click (Context Menu) Detection bypass loaded');
+
     // Create GUI Popup
     function createPopup() {
         // Remove existing popup if any
@@ -464,7 +538,7 @@
 
         // Status message
         const statusText = document.createElement('div');
-        statusText.innerHTML = '✅ <strong>DitHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Page Visibility API Bypassed</span>';
+        statusText.innerHTML = '✅ <strong>DitHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Detection Bypassed</span>';
         statusText.style.cssText = `
             font-size: 18px;
             margin-bottom: 15px;
