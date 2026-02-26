@@ -1,5 +1,5 @@
 // Bypass Detection!
-// Developer : ADIT ENGINEER Pelores
+// Developer : LeXHack!
 
 (function() {
     'use strict';
@@ -263,7 +263,7 @@
         `;
 
         const authorText = document.createElement('div');
-        authorText.innerHTML = '<strong>Developer</strong><br>ADIT! ENGINEER Manggeray';
+        authorText.innerHTML = '<strong>Developer</strong><br>xDitt4GT++';
         authorText.style.cssText = `
             font-size: 14px;
             color: #00d9ff;
@@ -274,7 +274,7 @@
         `;
 
         const statusText = document.createElement('div');
-        statusText.innerHTML = '✅ <strong>DitHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Detection Bypassed</span>';
+        statusText.innerHTML = '✅ <strong>LeXHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Detection Bypassed</span>';
         statusText.style.cssText = `
             font-size: 18px;
             margin-bottom: 15px;
