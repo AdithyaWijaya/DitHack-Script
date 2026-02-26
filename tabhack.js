@@ -1,5 +1,5 @@
 // Bypass Detection!
-// Developer : LeXHack!
+// Developer : YazHack!
 
 (function() {
     'use strict';
@@ -274,7 +274,7 @@
         `;
 
         const statusText = document.createElement('div');
-        statusText.innerHTML = '✅ <strong>LeXHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Detection Bypassed</span>';
+        statusText.innerHTML = '✅ <strong>YazHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Detection Bypassed</span>';
         statusText.style.cssText = `
             font-size: 18px;
             margin-bottom: 15px;
