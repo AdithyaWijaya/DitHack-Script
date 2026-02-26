@@ -1,1 +1,0 @@
-javascript: (function () {let s = document.createElement("script");s.src = "https://adithyawijaya.github.io/DitExam/tabhack.js?v=" + Date.now();document.head.appendChild(s);})();
