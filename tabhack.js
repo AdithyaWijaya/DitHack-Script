@@ -1,5 +1,5 @@
-// Bypass Page Visibility API & Event blur & focus
-// Author : ADITHYA
+// Bypass Detection!
+// Developer : ADIT ENGINEER Pelores
 
 (function() {
     'use strict';
@@ -7,6 +7,13 @@
     // Backup original values
     const originalDocument = document;
     const originalWindow = window;
+    const originalAddEventListener = window.addEventListener;
+    const originalDocumentAddEventListener = document.addEventListener;
+    const originalEventTargetAddEventListener = EventTarget ? EventTarget.prototype.addEventListener : null;
+
+    // =====================================================
+    // Page Visibility API & blur/focus Events
+    // =====================================================
 
     // Override document.hidden property
     Object.defineProperty(document, 'hidden', {
@@ -24,13 +31,13 @@
         configurable: false
     });
 
-    // Override document.onvisibilitychange (if it exists)
+    // Override document.onvisibilitychange
     Object.defineProperty(document, 'onvisibilitychange', {
         get: function() {
             return null;
         },
         set: function(handler) {
-            // Don't actually set it, or you could set a mock handler
+            // Don't actually set it
         },
         configurable: false
     });
@@ -57,82 +64,10 @@
         configurable: false
     });
 
-    // Override addEventListener for blur and focus events
-    const originalAddEventListener = window.addEventListener;
-    
-    window.addEventListener = function(type, listener, options) {
-        // Bypass blur event listeners
-        if (type === 'blur') {
-            console.log('[Bypass] Blocked blur event listener');
-            return;
-        }
-        
-        // Bypass focus event listeners
-        if (type === 'focus') {
-            console.log('[Bypass] Blocked focus event listener');
-            return;
-        }
-        
-        // Bypass visibilitychange event listeners
-        if (type === 'visibilitychange') {
-            console.log('[Bypass] Blocked visibilitychange event listener');
-            return;
-        }
-        
-        // Bypass focusin event listeners
-        if (type === 'focusin') {
-            console.log('[Bypass] Blocked focusin event listener');
-            return;
-        }
-        
-        // Bypass focusout event listeners
-        if (type === 'focusout') {
-            console.log('[Bypass] Blocked focusout event listener');
-            return;
-        }
-        
-        // Pass through other events
-        return originalAddEventListener.call(this, type, listener, options);
-    };
-
-    // Override removeEventListener for completeness
-    const originalRemoveEventListener = window.removeEventListener;
-    
-    window.removeEventListener = function(type, listener, options) {
-        // Still allow removal of blocked events (no-op anyway)
-        if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
-            return;
-        }
-        return originalRemoveEventListener.call(this, type, listener, options);
-    };
-
-    // Override EventTarget.prototype.addEventListener if available
-    if (EventTarget && EventTarget.prototype) {
-        const originalEventTargetAddEventListener = EventTarget.prototype.addEventListener;
-        
-        EventTarget.prototype.addEventListener = function(type, listener, options) {
-            if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
-                console.log('[Bypass] Blocked EventTarget.' + type + ' event listener');
-                return;
-            }
-            return originalEventTargetAddEventListener.call(this, type, listener, options);
-        };
-    }
-
-    // Mock function to manually trigger focus state (if needed)
-    window.simulateFocus = function() {
-        console.log('[Bypass] Simulating focus state');
-    };
-
-    // Mock function to manually trigger blur state (if needed)  
-    window.simulateBlur = function() {
-        console.log('[Bypass] Simulating blur state');
-    };
-
     // =====================================================
     // Bypass Window Resizing Detection
     // =====================================================
-    
+
     // Override window.onresize
     Object.defineProperty(window, 'onresize', {
         get: function() {
@@ -143,35 +78,6 @@
         },
         configurable: false
     });
-
-    // Block resize event listeners
-    const originalWindowAddEventListenerResize = window.addEventListener;
-    window.addEventListener = function(type, listener, options) {
-        if (type === 'resize') {
-            console.log('[Bypass] Blocked resize event listener');
-            return;
-        }
-        // Pass through to original addEventListener for other events
-        return originalAddEventListener.call(this, type, listener, options);
-    };
-
-    // Override EventTarget.prototype.addEventListener for resize
-    if (EventTarget && EventTarget.prototype) {
-        const originalEventTargetAddEventListenerResize = EventTarget.prototype.addEventListener;
-        
-        EventTarget.prototype.addEventListener = function(type, listener, options) {
-            if (type === 'resize') {
-                console.log('[Bypass] Blocked EventTarget.resize event listener');
-                return;
-            }
-            // Also handle blur/focus/visibilitychange in the same override
-            if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
-                console.log('[Bypass] Blocked EventTarget.' + type + ' event listener');
-                return;
-            }
-            return originalEventTargetAddEventListenerResize.call(this, type, listener, options);
-        };
-    }
 
     // Mock window dimensions to prevent size detection
     let mockWidth = window.innerWidth;
@@ -283,75 +189,6 @@
         configurable: false
     });
 
-    // Block fullscreenchange and fullscreenerror event listeners
-    const originalAddEventListenerFS = window.addEventListener;
-    window.addEventListener = function(type, listener, options) {
-        if (type === 'fullscreenchange') {
-            console.log('[Bypass] Blocked fullscreenchange event listener');
-            return;
-        }
-        if (type === 'fullscreenerror') {
-            console.log('[Bypass] Blocked fullscreenerror event listener');
-            return;
-        }
-        if (type === 'resize') {
-            console.log('[Bypass] Blocked resize event listener');
-            return;
-        }
-        if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
-            console.log('[Bypass] Blocked ' + type + ' event listener');
-            return;
-        }
-        return originalAddEventListener.call(this, type, listener, options);
-    };
-
-    // Also override document.addEventListener
-    const originalDocumentAddEventListener = document.addEventListener;
-    document.addEventListener = function(type, listener, options) {
-        if (type === 'fullscreenchange') {
-            console.log('[Bypass] Blocked document fullscreenchange event listener');
-            return;
-        }
-        if (type === 'fullscreenerror') {
-            console.log('[Bypass] Blocked document fullscreenerror event listener');
-            return;
-        }
-        if (type === 'resize') {
-            console.log('[Bypass] Blocked document resize event listener');
-            return;
-        }
-        if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
-            console.log('[Bypass] Blocked document ' + type + ' event listener');
-            return;
-        }
-        return originalDocumentAddEventListener.call(this, type, listener, options);
-    };
-
-    // Override EventTarget.prototype.addEventListener for fullscreen events
-    if (EventTarget && EventTarget.prototype) {
-        const originalEventTargetAddEventListenerFS = EventTarget.prototype.addEventListener;
-        
-        EventTarget.prototype.addEventListener = function(type, listener, options) {
-            if (type === 'fullscreenchange') {
-                console.log('[Bypass] Blocked EventTarget.fullscreenchange event listener');
-                return;
-            }
-            if (type === 'fullscreenerror') {
-                console.log('[Bypass] Blocked EventTarget.fullscreenerror event listener');
-                return;
-            }
-            if (type === 'resize') {
-                console.log('[Bypass] Blocked EventTarget.resize event listener');
-                return;
-            }
-            if (type === 'blur' || type === 'focus' || type === 'visibilitychange' || type === 'focusin' || type === 'focusout') {
-                console.log('[Bypass] Blocked EventTarget.' + type + ' event listener');
-                return;
-            }
-            return originalEventTargetAddEventListenerFS.call(this, type, listener, options);
-        };
-    }
-
     // Override requestFullscreen methods
     const originalRequestFullscreen = Element.prototype.requestFullscreen;
     Element.prototype.requestFullscreen = function() {
@@ -368,7 +205,6 @@
 
     // Override webkit specific methods (for Safari/Chrome)
     if (Element.prototype.webkitRequestFullscreen) {
-        const originalWebkitRequestFullscreen = Element.prototype.webkitRequestFullscreen;
         Element.prototype.webkitRequestFullscreen = function() {
             console.log('[Bypass] Blocked webkitRequestFullscreen call');
             return Promise.reject(new Error('Fullscreen request blocked'));
@@ -376,7 +212,6 @@
     }
 
     if (document.webkitExitFullscreen) {
-        const originalWebkitExitFullscreen = document.webkitExitFullscreen;
         document.webkitExitFullscreen = function() {
             console.log('[Bypass] Blocked webkitExitFullscreen call');
             return Promise.resolve();
@@ -385,7 +220,6 @@
 
     // Override moz specific methods (for Firefox)
     if (Element.prototype.mozRequestFullScreen) {
-        const originalMozRequestFullScreen = Element.prototype.mozRequestFullScreen;
         Element.prototype.mozRequestFullScreen = function() {
             console.log('[Bypass] Blocked mozRequestFullScreen call');
             return Promise.reject(new Error('Fullscreen request blocked'));
@@ -393,7 +227,6 @@
     }
 
     if (document.mozExitFullScreen) {
-        const originalMozExitFullScreen = document.mozExitFullScreen;
         document.mozExitFullScreen = function() {
             console.log('[Bypass] Blocked mozExitFullScreen call');
             return Promise.resolve();
@@ -402,7 +235,6 @@
 
     // Override ms specific methods (for IE/Edge)
     if (Element.prototype.msRequestFullscreen) {
-        const originalMsRequestFullscreen = Element.prototype.msRequestFullscreen;
         Element.prototype.msRequestFullscreen = function() {
             console.log('[Bypass] Blocked msRequestFullscreen call');
             return Promise.reject(new Error('Fullscreen request blocked'));
@@ -410,16 +242,130 @@
     }
 
     if (document.msExitFullscreen) {
-        const originalMsExitFullscreen = document.msExitFullscreen;
         document.msExitFullscreen = function() {
             console.log('[Bypass] Blocked msExitFullscreen call');
             return Promise.resolve();
         };
     }
 
+    // =====================================================
+    // Bypass Right Click (Context Menu) Detection
+    // =====================================================
+
+    // Override document.oncontextmenu
+    Object.defineProperty(document, 'oncontextmenu', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it - bypass context menu detection
+        },
+        configurable: false
+    });
+
+    // Override window.oncontextmenu
+    Object.defineProperty(window, 'oncontextmenu', {
+        get: function() {
+            return function() {};
+        },
+        set: function(handler) {
+            // Don't actually set it - bypass context menu detection
+        },
+        configurable: false
+    });
+
+    // =====================================================
+    // Unified addEventListener Override (Window)
+    // =====================================================
+    
+    window.addEventListener = function(type, listener, options) {
+        // Blocked events list
+        const blockedEvents = [
+            'blur', 'focus', 'visibilitychange', 'focusin', 'focusout',
+            'resize',
+            'fullscreenchange', 'fullscreenerror',
+            'contextmenu'
+        ];
+        
+        if (blockedEvents.indexOf(type) !== -1) {
+            console.log('[Bypass] Blocked ' + type + ' event listener');
+            return;
+        }
+        
+        // Pass through other events
+        return originalAddEventListener.call(this, type, listener, options);
+    };
+
+    // =====================================================
+    // Unified addEventListener Override (Document)
+    // =====================================================
+    
+    document.addEventListener = function(type, listener, options) {
+        // Blocked events list
+        const blockedEvents = [
+            'blur', 'focus', 'visibilitychange', 'focusin', 'focusout',
+            'resize',
+            'fullscreenchange', 'fullscreenerror',
+            'contextmenu'
+        ];
+        
+        if (blockedEvents.indexOf(type) !== -1) {
+            console.log('[Bypass] Blocked document ' + type + ' event listener');
+            return;
+        }
+        
+        // Pass through other events
+        return originalDocumentAddEventListener.call(this, type, listener, options);
+    };
+
+    // =====================================================
+    // EventTarget.prototype.addEventListener Override
+    // =====================================================
+    
+    if (EventTarget && EventTarget.prototype && originalEventTargetAddEventListener) {
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+            // Blocked events list
+            const blockedEvents = [
+                'blur', 'focus', 'visibilitychange', 'focusin', 'focusout',
+                'resize',
+                'fullscreenchange', 'fullscreenerror',
+                'contextmenu'
+            ];
+            
+            if (blockedEvents.indexOf(type) !== -1) {
+                console.log('[Bypass] Blocked EventTarget.' + type + ' event listener');
+                return;
+            }
+            
+            return originalEventTargetAddEventListener.call(this, type, listener, options);
+        };
+    }
+
+    // =====================================================
+    // Prevent Default Context Menu
+    // =====================================================
+    
+    // Use capture phase to prevent context menu before other scripts can block it
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        console.log('[Bypass] Prevented context menu');
+        return false;
+    }, true);
+
+    // Mock function to manually trigger focus state (if needed)
+    window.simulateFocus = function() {
+        console.log('[Bypass] Simulating focus state');
+    };
+
+    // Mock function to manually trigger blur state (if needed)  
+    window.simulateBlur = function() {
+        console.log('[Bypass] Simulating blur state');
+    };
+
     console.log('[Bypass] Page Visibility API & blur/focus events bypass loaded');
     console.log('[Bypass] Window Resizing bypass loaded');
     console.log('[Bypass] Full Screen Detection bypass loaded');
+    console.log('[Bypass] Right Click (Context Menu) Detection bypass loaded');
 
     // Create GUI Popup
     function createPopup() {
@@ -464,7 +410,7 @@
 
         // Status message
         const statusText = document.createElement('div');
-        statusText.innerHTML = '✅ <strong>DitHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Page Visibility API Bypassed</span>';
+        statusText.innerHTML = '✅ <strong>DitHack Activated!</strong><br><span style="font-size: 12px; color: #aaa;">Detection Bypassed</span>';
         statusText.style.cssText = `
             font-size: 18px;
             margin-bottom: 15px;
@@ -528,7 +474,7 @@
         // Add fade-in animation
         popup.style.opacity = '0';
         popup.style.transition = 'opacity 0.3s ease';
-        setTimeout(() => {
+        setTimeout(function() {
             popup.style.opacity = '1';
         }, 10);
     }
@@ -541,4 +487,3 @@
         createPopup();
     };
 })();
-
