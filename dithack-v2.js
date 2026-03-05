@@ -159,9 +159,24 @@
         
         container.appendChild(header);
         container.appendChild(content);
+        
+        // Resize handle
+        const resizeHandle = document.createElement('div');
+        Object.assign(resizeHandle.style, {
+            position: 'absolute',
+            bottom: '0',
+            right: '0',
+            width: isMobile ? '20px' : '15px',
+            height: isMobile ? '20px' : '15px',
+            cursor: 'se-resize',
+            background: 'linear-gradient(135deg, transparent 50%, #4b4bfF 50%)',
+            borderBottomRightRadius: isMobile ? '8px' : '12px'
+        });
+        
+        container.appendChild(resizeHandle);
         document.body.appendChild(container);
         
-        return { container, header, content, searchBar, clearBtn, resultsWrap, minimizeBtn, hideBtn };
+        return { container, header, content, searchBar, clearBtn, resultsWrap, minimizeBtn, hideBtn, resizeHandle };
     }
     
     // Create toggle button - mobile optimized
@@ -230,7 +245,7 @@
     async function fetchAnswers(pin, resultsEl) {
         try {
             if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Menghubungi server...</div>';
+                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Menghubungi api.adithya.server...</div>';
             }
             
             const response = await fetch(`https://api.quizit.online/quizizz?pin=${encodeURIComponent(pin)}`, {
@@ -397,7 +412,7 @@
     
     // Main initialization
     async function init() {
-        const { container, header, content, searchBar, clearBtn, resultsWrap, minimizeBtn, hideBtn } = createFrame();
+        const { container, header, content, searchBar, clearBtn, resultsWrap, minimizeBtn, hideBtn, resizeHandle } = createFrame();
         createToggleButton();
         
         // Get PIN from URL or prompt user
@@ -603,6 +618,63 @@
         
         document.addEventListener('touchend', function() {
             isDragging = false;
+        });
+        
+        // Resize functionality - mouse
+        let isResizing = false;
+        let startX, startY, startWidth, startHeight;
+        const minWidth = 200;
+        const minHeight = 200;
+        
+        resizeHandle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            isResizing = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startWidth = container.offsetWidth;
+            startHeight = container.offsetHeight;
+            document.body.style.userSelect = 'none';
+        });
+        
+        document.addEventListener('mousemove', function(e) {
+            if (!isResizing) return;
+            const newWidth = Math.max(minWidth, startWidth + (e.clientX - startX));
+            const newHeight = Math.max(minHeight, startHeight + (e.clientY - startY));
+            container.style.width = newWidth + 'px';
+            container.style.height = newHeight + 'px';
+            container.style.maxHeight = 'none';
+        });
+        
+        document.addEventListener('mouseup', function() {
+            isResizing = false;
+            document.body.style.userSelect = 'auto';
+        });
+        
+        // Resize functionality - touch (mobile)
+        resizeHandle.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const touch = e.touches[0];
+            isResizing = true;
+            startX = touch.clientX;
+            startY = touch.clientY;
+            startWidth = container.offsetWidth;
+            startHeight = container.offsetHeight;
+        }, { passive: false });
+        
+        document.addEventListener('touchmove', function(e) {
+            if (!isResizing) return;
+            const touch = e.touches[0];
+            const newWidth = Math.max(minWidth, startWidth + (touch.clientX - startX));
+            const newHeight = Math.max(minHeight, startHeight + (touch.clientY - startY));
+            container.style.width = newWidth + 'px';
+            container.style.height = newHeight + 'px';
+            container.style.maxHeight = 'none';
+        }, { passive: true });
+        
+        document.addEventListener('touchend', function() {
+            isResizing = false;
         });
     }
     
