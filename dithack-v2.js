@@ -52,7 +52,7 @@
         });
         
         const title = document.createElement('span');
-        title.textContent = 'DitHack v2';
+        title.textContent = 'DitHack!';
         header.appendChild(title);
         
         const controls = document.createElement('div');
@@ -124,7 +124,7 @@
     function createToggleButton() {
         const btn = document.createElement('button');
         btn.id = 'quizizz-hack-toggle';
-        btn.textContent = '📝 Quizizz';
+        btn.textContent = '📝 DitHack!';
         btn.style.cssText = `
             position: fixed;
             bottom: 20px;
@@ -139,7 +139,18 @@
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             font-family: Inter, system-ui, sans-serif;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
         `;
+        
+        // Add hover effect
+        btn.onmouseenter = function() {
+            btn.style.opacity = '1';
+        };
+        
+        btn.onmouseleave = function() {
+            btn.style.opacity = '0.1';
+        };
         
         btn.onclick = function() {
             const frame = document.getElementById('quizizz-hack-frame');
@@ -204,7 +215,7 @@
         }
     }
     
-    // Render answer cards
+// Render answer cards
     function renderCards(answers, searchTerm = '') {
         const resultsWrap = document.getElementById('quizizz-results');
         if (!resultsWrap) return;
@@ -221,7 +232,7 @@
         if (searchTerm) {
             const term = searchTerm.toLowerCase();
             filteredAnswers = answers.filter(ans => {
-                const questionText = (ans.question && ans.question.text) ? ans.question.text.replace(/<[^>]*>/g, '') : '';
+                const questionText = (ans.question && (ans.question.text || ans.question.structure && ans.question.structure.text)) ? (ans.question.text || ans.question.structure.text).replace(/<[^>]*>/g, '') : '';
                 const answerText = (ans.answers && ans.answers[0] && ans.answers[0].text) ? ans.answers[0].text.replace(/<[^>]*>/g, '') : '';
                 return questionText.toLowerCase().includes(term) || answerText.toLowerCase().includes(term);
             });
@@ -240,38 +251,86 @@
                 padding: 12px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 border-left: 4px solid #4b4bfF;
+                margin-bottom: 8px;
             `;
             
-            // Get question text - handle HTML tags
-            let questionText = '';
-            if (ans.question && ans.question.text) {
-                // Create temp element to strip HTML
-                const temp = document.createElement('div');
-                temp.innerHTML = ans.question.text;
-                questionText = temp.textContent || temp.innerText || 'Soal ' + (index + 1);
+            // Get question text - keep HTML for math formulas
+            let questionHTML = '';
+            if (ans.question && (ans.question.text || ans.question.structure)) {
+                questionHTML = ans.question.text || ans.question.structure.text;
             } else {
-                questionText = 'Soal ' + (index + 1);
+                questionHTML = 'Soal ' + (index + 1);
             }
             
-            // Get correct answer text
-            let correctAnswerText = '';
+            // Check for images in question - handle different API formats
+            let questionImage = '';
+            
+            // Format 1: ans.question.image (string URL)
+            if (ans.question && ans.question.image && typeof ans.question.image === 'string') {
+                questionImage = `<img src="${ans.question.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
+            }
+            // Format 2: ans.question.media (array)
+            else if (ans.question && ans.question.media && ans.question.media.length > 0) {
+                const mediaItem = ans.question.media.find(m => m && m.url);
+                if (mediaItem && mediaItem.url) {
+                    questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
+                }
+            }
+            // Format 3: ans.question.structure.media
+            else if (ans.question && ans.question.structure && ans.question.structure.media) {
+                const mediaItem = ans.question.structure.media;
+                if (mediaItem.url) {
+                    questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
+                }
+            }
+            
+            // Get correct answer text - keep HTML for math
+            let answerHTML = '';
             if (ans.answers && ans.answers.length > 0 && ans.answers[0].text) {
-                const temp = document.createElement('div');
-                temp.innerHTML = ans.answers[0].text;
-                correctAnswerText = temp.textContent || temp.innerText || '';
+                answerHTML = ans.answers[0].text;
             }
             
+            // Check for answer media (image)
+            let answerImage = '';
+            if (ans.answers && ans.answers.length > 0) {
+                const ansObj = ans.answers[0];
+                // Format 1: ans.answers[0].image
+                if (ansObj.image && typeof ansObj.image === 'string') {
+                    answerImage = `<img src="${ansObj.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
+                }
+                // Format 2: ans.answers[0].media
+                else if (ansObj.media && ansObj.media.length > 0) {
+                    const mediaItem = ansObj.media.find(m => m && m.url);
+                    if (mediaItem && mediaItem.url) {
+                        answerImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
+                    }
+                }
+            }
+            
+            // Build card HTML with proper math styling
             card.innerHTML = `
-                <div style="font-size:14px; font-weight:600; color:#111; margin-bottom:8px;">
-                    ${index + 1}. ${questionText}
+                <div style="font-size:14px; font-weight:600; color:#111; margin-bottom:8px; word-wrap:break-word; overflow-wrap:break-word;">
+                    <span style="background:#e5e7eb; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">${index + 1}</span>
+                    <span class="math-question">${questionHTML}</span>
+                    ${questionImage}
                 </div>
-                <div style="font-size:13px; color:#10b981; font-weight:bold;">
-                    ✓ ${correctAnswerText}
+<div style="font-size:13px; color:#10b981; font-weight:bold; margin-top:8px; word-wrap:break-word; overflow-wrap:break-word;">
+                    <span class="math-answer">${answerHTML}</span>
+                    ${answerImage}
                 </div>
             `;
             
             resultsWrap.appendChild(card);
         });
+        
+        // Apply math rendering styles after adding to DOM
+        setTimeout(() => {
+            document.querySelectorAll('.math-question, .math-answer').forEach(el => {
+                // Use browser's native rendering for math
+                el.style.fontFamily = '"Times New Roman", Times, serif';
+                el.style.fontSize = '15px';
+            });
+        }, 100);
     }
     
     // Main initialization
@@ -488,4 +547,3 @@
     
     console.log('✅ Quizizz Answer Viewer loaded!');
 })();
-
