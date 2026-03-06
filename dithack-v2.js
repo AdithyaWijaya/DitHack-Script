@@ -606,15 +606,16 @@
             isDragging = true;
             offsetX = touch.clientX - container.offsetLeft;
             offsetY = touch.clientY - container.offsetTop;
-        }, { passive: true });
+        }, { passive: false });
         
         document.addEventListener('touchmove', function(e) {
             if (!isDragging) return;
+            e.preventDefault();
             const touch = e.touches[0];
             container.style.left = (touch.clientX - offsetX) + 'px';
             container.style.top = (touch.clientY - offsetY) + 'px';
             container.style.right = 'auto';
-        }, { passive: true });
+        }, { passive: false });
         
         document.addEventListener('touchend', function() {
             isDragging = false;
@@ -665,13 +666,14 @@
         
         document.addEventListener('touchmove', function(e) {
             if (!isResizing) return;
+            e.preventDefault();
             const touch = e.touches[0];
             const newWidth = Math.max(minWidth, startWidth + (touch.clientX - startX));
             const newHeight = Math.max(minHeight, startHeight + (touch.clientY - startY));
             container.style.width = newWidth + 'px';
             container.style.height = newHeight + 'px';
             container.style.maxHeight = 'none';
-        }, { passive: true });
+        }, { passive: false });
         
         document.addEventListener('touchend', function() {
             isResizing = false;
