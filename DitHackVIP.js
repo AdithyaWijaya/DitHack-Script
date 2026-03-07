@@ -1,4 +1,4 @@
-// DitHack - Quizizz Answer Hack
+// DitHack! VIP
 // Developer: ADITHYA
 // VIP VERSION
 
@@ -259,7 +259,7 @@
             height: isMobile ? 'auto' : '500px',
             backgroundColor: '#fff',
             borderRadius: isMobile ? '8px' : '12px',
-            border: '2px solid #4b4bfF',
+            border: 'none',
             boxShadow: '0 6px 20px rgba(0,0,0,0.3)',
             zIndex: '999999',
             display: 'flex',
@@ -284,7 +284,7 @@
         });
         
         const title = document.createElement('span');
-        title.textContent = 'DitHack!';
+        title.textContent = 'DitHack! VIP';
         title.style.fontSize = isMobile ? '14px' : '16px';
         header.appendChild(title);
         
@@ -334,37 +334,49 @@
             position: 'sticky',
             top: '0',
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'stretch',
             width: '100%',
             backgroundColor: '#f9fafb',
             marginBottom: isMobile ? '8px' : '12px',
-            gap: '4px'
+            gap: '0px',
+            height: '40px'
         });
         
         const searchBar = document.createElement('input');
         searchBar.type = 'text';
         searchBar.placeholder = 'Cari soal...';
         searchBar.style.cssText = `
-            flex: 1; 
-            padding: 10px 12px; 
-            border-radius: 8px 0 0 8px; 
-            border: 1px solid #ccc; 
-            border-right: none; 
-            font-size: ${isMobile ? '16px' : '14px'};
-            min-height: 40px;
+            flex: 1 !important; 
+            padding: 8px 12px !important; 
+            border-radius: 8px 0 0 8px !important; 
+            border: 1px solid #ccc !important; 
+            border-right: none !important; 
+            font-size: 14px !important;
+            height: 40px !important;
+            line-height: 24px !important;
+            box-sizing: border-box !important;
+            outline: none !important;
+            margin: 0 !important;
         `;
         
         const clearBtn = document.createElement('button');
         clearBtn.textContent = '✕';
         clearBtn.style.cssText = `
-            padding: 10px 14px; 
-            background: #e5e7eb; 
-            border: 1px solid #ccc; 
-            border-left: none; 
-            border-radius: 0 8px 8px 0; 
-            cursor: pointer;
-            min-width: 40px;
-            min-height: 40px;
+            padding: 0 12px !important; 
+            background: #e5e7eb !important; 
+            border: 1px solid #ccc !important; 
+            border-left: none !important; 
+            border-radius: 0 8px 8px 0 !important; 
+            cursor: pointer !important;
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 14px !important;
+            line-height: 40px !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         `;
         
         searchWrap.appendChild(searchBar);
@@ -413,28 +425,34 @@
         btn.textContent = '📝';
         
         // Mobile-friendly button - smaller size, bottom-left corner
+        // Using !important to override site-specific CSS
         btn.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            padding: ${isMobile ? '10px 16px' : '12px 20px'};
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            z-index: 999998;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            font-family: Inter, system-ui, sans-serif;
-            opacity: 0.1;
-            transition: opacity 0.3s ease, transform 0.2s ease;
-            font-size: ${isMobile ? '18px' : '16px'};
-            min-width: ${isMobile ? '40px' : 'auto'};
-            min-height: ${isMobile ? '40px' : 'auto'};
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: fixed !important;
+            bottom: 20px !important;
+            left: 20px !important;
+            padding: 12px 16px !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 50px !important;
+            cursor: pointer !important;
+            z-index: 999998 !important;
+            font-weight: bold !important;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+            font-family: Inter, system-ui, sans-serif !important;
+            opacity: 0.1 !important;
+            transition: opacity 0.3s ease, transform 0.2s ease !important;
+            font-size: 18px !important;
+            width: 50px !important;
+            max-width: 50px !important;
+            min-width: 50px !important;
+            height: 50px !important;
+            max-height: 50px !important;
+            min-height: 50px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
         `;
         
         // Touch feedback
@@ -470,7 +488,7 @@
     async function fetchAnswers(pin, resultsEl) {
         try {
             if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Menghubungi api.adithya.server...</div>';
+                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Menghubungi server...</div>';
             }
             
             const response = await fetch(`https://api.quizit.online/quizizz?pin=${encodeURIComponent(pin)}`, {
@@ -485,31 +503,28 @@
             console.log('Response status:', response.status);
             
             if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
+                if (resultsEl) {
+                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
+                }
+                return null;
             }
             
             const data = await response.json();
             console.log('API Response:', data);
+            
+            // Check if data is valid and has answers
+            if (!data || (data.data && !data.data.answers) || (data.data && data.data.answers && data.data.answers.length === 0) || (!data.data && !data.answers)) {
+                if (resultsEl) {
+                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
+                }
+                return null;
+            }
+            
             return data;
         } catch (error) {
             console.error('Error fetching answers:', error);
-            return await fetchAnswersAlt(pin, resultsEl);
-        }
-    }
-    
-    // Alternative API fetch
-    async function fetchAnswersAlt(pin, resultsEl) {
-        try {
             if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Mencoba ulang...</div>';
-            }
-            const response = await fetch(`https://api.quizit.online/quizizz?pin=${encodeURIComponent(pin)}`);
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Alt fetch error:', error);
-            if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data.<br>Cek console untuk detail error</div>';
+                resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
             }
             return null;
         }
@@ -519,7 +534,7 @@
     async function fetchKahootAnswers(link, resultsEl) {
         try {
             if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Menghubungi server Kahoot...</div>';
+                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Menghubungi server...</div>';
             }
             
             const response = await fetch(`https://api.quizit.online/kahoot?link=${encodeURIComponent(link)}`, {
@@ -534,16 +549,28 @@
             console.log('Kahoot Response status:', response.status);
             
             if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
+                if (resultsEl) {
+                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
+                }
+                return null;
             }
             
             const data = await response.json();
             console.log('Kahoot API Response:', data);
+            
+            // Check if data is valid and has answers
+            if (!data || (data.answers && data.answers.length === 0)) {
+                if (resultsEl) {
+                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
+                }
+                return null;
+            }
+            
             return data;
         } catch (error) {
             console.error('Error fetching Kahoot answers:', error);
             if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data.<br>Cek console untuk detail error</div>';
+                resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
             }
             return null;
         }
@@ -658,8 +685,7 @@
         // Apply math rendering styles after adding to DOM
         setTimeout(() => {
             document.querySelectorAll('.math-question, .math-answer').forEach(el => {
-                el.style.fontFamily = '"Times New Roman", Times, serif';
-                el.style.fontSize = '15px';
+                el.style.fontFamily = 'Inter, system-ui, sans-serif';
             });
         }, 100);
     }
@@ -741,8 +767,7 @@
         // Apply math rendering styles after adding to DOM
         setTimeout(() => {
             document.querySelectorAll('.math-question, .math-answer').forEach(el => {
-                el.style.fontFamily = '"Times New Roman", Times, serif';
-                el.style.fontSize = '15px';
+                el.style.fontFamily = 'Inter, system-ui, sans-serif';
             });
         }, 100);
     }
@@ -754,15 +779,17 @@
         
         // Get PIN from URL or prompt user
         let pin = '';
+        const currentDomain = window.location.hostname;
+        const isQuizizz = currentDomain.includes('quizizz');
         
-        // Try to get PIN from URL
+        // Try to get PIN from URL (only for Quizizz)
         const urlParams = new URLSearchParams(window.location.search);
         const urlPin = urlParams.get('pin') || urlParams.get('gamePin');
         
-        if (urlPin) {
+        if (urlPin && isQuizizz) {
             pin = urlPin;
-        } else {
-            // Check Quizizz page for game PIN
+        } else if (isQuizizz) {
+            // Check Quizizz page for game PIN only on Quizizz
             const pinElement = document.querySelector('[data-pin], .game-pin, [class*="pin"]');
             if (pinElement) {
                 pin = pinElement.textContent || pinElement.getAttribute('data-pin') || '';
@@ -789,7 +816,7 @@
             const kahootBtn = document.createElement('button');
             kahootBtn.textContent = '🎯 Kahoot';
             kahootBtn.dataset.type = 'kahoot';
-            kahootBtn.style.cssText = 'flex:1; padding:10px; background:#ccc; color:#333; border:none; border-radius:8px; cursor:pointer; font-size:14px;';
+            kahootBtn.style.cssText = 'flex:1; padding:10px; background:#ccc; color:#333; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;';
             
             gameTypeSelector.appendChild(quizizzBtn);
             gameTypeSelector.appendChild(kahootBtn);
@@ -850,7 +877,7 @@
                     } else if (cachedData) {
                         renderCards(cachedData);
                     } else {
-                        resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data<br>Cek console (F12)</div>';
+                        resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
                     }
                 } else {
                     // Kahoot fetch
@@ -860,7 +887,7 @@
                     } else if (cachedData) {
                         renderKahootCards(cachedData);
                     } else {
-                        resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data<br>Cek console (F12)</div>';
+                        resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
                     }
                 }
             };
