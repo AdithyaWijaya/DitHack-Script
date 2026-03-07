@@ -9,78 +9,31 @@
     // PART 1: DETECTION BYPASS
     // =====================================================
     
-    // Backup original addEventListener
     const originalAddEventListener = window.addEventListener;
     const originalDocumentAddEventListener = document.addEventListener;
     const originalEventTargetAddEventListener = EventTarget ? EventTarget.prototype.addEventListener : null;
 
-    // Shared blocked events list
     const blockedEvents = [
         'blur', 'focus', 'visibilitychange', 'focusin', 'focusout',
-        'resize',
-        'fullscreenchange', 'fullscreenerror',
-        'contextmenu'
+        'resize', 'fullscreenchange', 'fullscreenerror', 'contextmenu'
     ];
 
     // Page Visibility API & blur/focus Events
-    Object.defineProperty(document, 'hidden', {
-        get: function() { return false; },
-        configurable: false
-    });
-
-    Object.defineProperty(document, 'visibilityState', {
-        get: function() { return 'visible'; },
-        configurable: false
-    });
-
-    Object.defineProperty(document, 'onvisibilitychange', {
-        get: function() { return null; },
-        set: function() { },
-        configurable: false
-    });
-
-    Object.defineProperty(window, 'onfocus', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
-
-    Object.defineProperty(window, 'onblur', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
-
-    // Bypass Window Resizing Detection
-    Object.defineProperty(window, 'onresize', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
+    Object.defineProperty(document, 'hidden', { get: function() { return false; }, configurable: false });
+    Object.defineProperty(document, 'visibilityState', { get: function() { return 'visible'; }, configurable: false });
+    Object.defineProperty(document, 'onvisibilitychange', { get: function() { return null; }, set: function() { }, configurable: false });
+    Object.defineProperty(window, 'onfocus', { get: function() { return function() {}; }, set: function() { }, configurable: false });
+    Object.defineProperty(window, 'onblur', { get: function() { return function() {}; }, set: function() { }, configurable: false });
+    Object.defineProperty(window, 'onresize', { get: function() { return function() {}; }, set: function() { }, configurable: false });
 
     // Mock window dimensions
     let mockWidth = window.innerWidth;
     let mockHeight = window.innerHeight;
 
-    Object.defineProperty(window, 'innerWidth', {
-        get: function() { return mockWidth; },
-        configurable: true
-    });
-
-    Object.defineProperty(window, 'innerHeight', {
-        get: function() { return mockHeight; },
-        configurable: true
-    });
-
-    Object.defineProperty(window, 'outerWidth', {
-        get: function() { return mockWidth; },
-        configurable: true
-    });
-
-    Object.defineProperty(window, 'outerHeight', {
-        get: function() { return mockHeight; },
-        configurable: true
-    });
+    Object.defineProperty(window, 'innerWidth', { get: function() { return mockWidth; }, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { get: function() { return mockHeight; }, configurable: true });
+    Object.defineProperty(window, 'outerWidth', { get: function() { return mockWidth; }, configurable: true });
+    Object.defineProperty(window, 'outerHeight', { get: function() { return mockHeight; }, configurable: true });
 
     // Screen properties
     Object.defineProperty(screen, 'width', { get: function() { return 1920; }, configurable: true });
@@ -94,28 +47,11 @@
         console.log('[Bypass] Mock dimensions set to: ' + width + 'x' + height);
     };
 
-    // Bypass Full Screen Detection
-    Object.defineProperty(document, 'fullscreenElement', {
-        get: function() { return document.createElement('div'); },
-        configurable: false
-    });
-
-    Object.defineProperty(document, 'fullscreenEnabled', {
-        get: function() { return false; },
-        configurable: false
-    });
-
-    Object.defineProperty(document, 'onfullscreenchange', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
-
-    Object.defineProperty(document, 'onfullscreenerror', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
+    // Full Screen Detection Bypass
+    Object.defineProperty(document, 'fullscreenElement', { get: function() { return document.createElement('div'); }, configurable: false });
+    Object.defineProperty(document, 'fullscreenEnabled', { get: function() { return false; }, configurable: false });
+    Object.defineProperty(document, 'onfullscreenchange', { get: function() { return function() {}; }, set: function() { }, configurable: false });
+    Object.defineProperty(document, 'onfullscreenerror', { get: function() { return function() {}; }, set: function() { }, configurable: false });
 
     // Override fullscreen methods
     Element.prototype.requestFullscreen = function() {
@@ -135,7 +71,6 @@
             return Promise.reject(new Error('Fullscreen request blocked'));
         };
     }
-
     if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen = function() {
             console.log('[Bypass] Blocked webkitExitFullscreen call');
@@ -150,7 +85,6 @@
             return Promise.reject(new Error('Fullscreen request blocked'));
         };
     }
-
     if (document.mozExitFullScreen) {
         document.mozExitFullScreen = function() {
             console.log('[Bypass] Blocked mozExitFullScreen call');
@@ -165,7 +99,6 @@
             return Promise.reject(new Error('Fullscreen request blocked'));
         };
     }
-
     if (document.msExitFullscreen) {
         document.msExitFullscreen = function() {
             console.log('[Bypass] Blocked msExitFullscreen call');
@@ -173,18 +106,9 @@
         };
     }
 
-    // Bypass Right Click (Context Menu) Detection
-    Object.defineProperty(document, 'oncontextmenu', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
-
-    Object.defineProperty(window, 'oncontextmenu', {
-        get: function() { return function() {}; },
-        set: function() { },
-        configurable: false
-    });
+    // Right Click (Context Menu) Detection Bypass
+    Object.defineProperty(document, 'oncontextmenu', { get: function() { return function() {}; }, set: function() { }, configurable: false });
+    Object.defineProperty(window, 'oncontextmenu', { get: function() { return function() {}; }, set: function() { }, configurable: false });
 
     // Unified addEventListener Override
     window.addEventListener = function(type, listener, options) {
@@ -226,27 +150,22 @@
     // PART 2: MAIN GUI SCRIPT
     // =====================================================
 
-    // Remove existing instance if any
+    // Remove existing instance
     const existingFrame = document.getElementById('quizizz-hack-frame');
-    if (existingFrame) {
-        existingFrame.remove();
-    }
+    if (existingFrame) existingFrame.remove();
     
-    // Remove existing toggle button if any
     const existingBtn = document.getElementById('quizizz-hack-toggle');
-    if (existingBtn) {
-        existingBtn.remove();
-    }
+    if (existingBtn) existingBtn.remove();
 
     let cachedData = null;
     let isMinimized = false;
+    let currentGameType = 'quizizz';
     
     // Create floating frame - mobile optimized
     function createFrame() {
         const container = document.createElement('div');
         container.id = 'quizizz-hack-frame';
         
-        // Mobile detection
         const isMobile = window.innerWidth <= 768;
         
         Object.assign(container.style, {
@@ -268,7 +187,7 @@
             fontFamily: 'Inter, system-ui, sans-serif'
         });
         
-        // Header - mobile optimized
+        // Header
         const header = document.createElement('div');
         Object.assign(header.style, {
             height: isMobile ? '40px' : '44px',
@@ -292,26 +211,13 @@
         controls.style.display = 'flex';
         controls.style.gap = '8px';
         
-        // Minimize button - larger for touch
         const minimizeBtn = document.createElement('span');
         minimizeBtn.textContent = '—';
-        minimizeBtn.style.cssText = `
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: ${isMobile ? '18px' : '14px'};
-            padding: 4px 8px;
-        `;
+        minimizeBtn.style.cssText = `cursor: pointer; font-weight: bold; font-size: ${isMobile ? '18px' : '14px'}; padding: 4px 8px;`;
         
-        // Hide button - larger for touch  
         const hideBtn = document.createElement('span');
         hideBtn.textContent = '✕';
-        hideBtn.style.cssText = `
-            cursor: pointer; 
-            padding: 6px 10px; 
-            background: rgba(255,255,255,0.2);
-            border-radius: 6px; 
-            font-size: ${isMobile ? '14px' : '12px'};
-        `;
+        hideBtn.style.cssText = `cursor: pointer; padding: 6px 10px; background: rgba(255,255,255,0.2); border-radius: 6px; font-size: ${isMobile ? '14px' : '12px'};`;
         
         controls.appendChild(minimizeBtn);
         controls.appendChild(hideBtn);
@@ -346,37 +252,20 @@
         searchBar.type = 'text';
         searchBar.placeholder = 'Cari soal...';
         searchBar.style.cssText = `
-            flex: 1 !important; 
-            padding: 8px 12px !important; 
-            border-radius: 8px 0 0 8px !important; 
-            border: 1px solid #ccc !important; 
-            border-right: none !important; 
-            font-size: 14px !important;
-            height: 40px !important;
-            line-height: 24px !important;
-            box-sizing: border-box !important;
-            outline: none !important;
-            margin: 0 !important;
+            flex: 1 !important; padding: 8px 12px !important; border-radius: 8px 0 0 8px !important;
+            border: 1px solid #ccc !important; border-right: none !important; font-size: 14px !important;
+            height: 40px !important; line-height: 24px !important; box-sizing: border-box !important;
+            outline: none !important; margin: 0 !important;
         `;
         
         const clearBtn = document.createElement('button');
         clearBtn.textContent = '✕';
         clearBtn.style.cssText = `
-            padding: 0 12px !important; 
-            background: #e5e7eb !important; 
-            border: 1px solid #ccc !important; 
-            border-left: none !important; 
-            border-radius: 0 8px 8px 0 !important; 
-            cursor: pointer !important;
-            width: 40px !important;
-            height: 40px !important;
-            font-size: 14px !important;
-            line-height: 40px !important;
-            box-sizing: border-box !important;
-            margin: 0 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            padding: 0 12px !important; background: #e5e7eb !important; border: 1px solid #ccc !important;
+            border-left: none !important; border-radius: 0 8px 8px 0 !important; cursor: pointer !important;
+            width: 40px !important; height: 40px !important; font-size: 14px !important; line-height: 40px !important;
+            box-sizing: border-box !important; margin: 0 !important; display: flex !important;
+            align-items: center !important; justify-content: center !important;
         `;
         
         searchWrap.appendChild(searchBar);
@@ -385,11 +274,7 @@
         // Results container
         const resultsWrap = document.createElement('div');
         resultsWrap.id = 'quizizz-results';
-        resultsWrap.style.cssText = `
-            display: flex; 
-            flex-direction: column; 
-            gap: ${isMobile ? '6px' : '8px'};
-        `;
+        resultsWrap.style.cssText = `display: flex; flex-direction: column; gap: ${isMobile ? '6px' : '8px'};`;
         
         content.appendChild(searchWrap);
         content.appendChild(resultsWrap);
@@ -424,53 +309,24 @@
         btn.id = 'quizizz-hack-toggle';
         btn.textContent = '📝';
         
-        // Mobile-friendly button - smaller size, bottom-left corner
-        // Using !important to override site-specific CSS
         btn.style.cssText = `
-            position: fixed !important;
-            bottom: 20px !important;
-            left: 20px !important;
-            padding: 12px 16px !important;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-            color: white !important;
-            border: none !important;
-            border-radius: 50px !important;
-            cursor: pointer !important;
-            z-index: 999998 !important;
-            font-weight: bold !important;
+            position: fixed !important; bottom: 20px !important; left: 20px !important;
+            padding: 12px 16px !important; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important; border: none !important; border-radius: 50px !important;
+            cursor: pointer !important; z-index: 999998 !important; font-weight: bold !important;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
-            font-family: Inter, system-ui, sans-serif !important;
-            opacity: 0.1 !important;
-            transition: opacity 0.3s ease, transform 0.2s ease !important;
-            font-size: 18px !important;
-            width: 50px !important;
-            max-width: 50px !important;
-            min-width: 50px !important;
-            height: 50px !important;
-            max-height: 50px !important;
-            min-height: 50px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
+            font-family: Inter, system-ui, sans-serif !important; opacity: 0.1 !important;
+            transition: opacity 0.3s ease, transform 0.2s ease !important; font-size: 18px !important;
+            width: 50px !important; max-width: 50px !important; min-width: 50px !important;
+            height: 50px !important; max-height: 50px !important; min-height: 50px !important;
+            display: flex !important; align-items: center !important; justify-content: center !important;
             box-sizing: border-box !important;
         `;
         
-        // Touch feedback
-        btn.addEventListener('touchstart', function() {
-            btn.style.transform = 'scale(0.95)';
-        });
-        
-        btn.addEventListener('touchend', function() {
-            btn.style.transform = 'scale(1)';
-        });
-        
-        btn.onmouseenter = function() {
-            btn.style.opacity = '1';
-        };
-        
-        btn.onmouseleave = function() {
-            btn.style.opacity = '0.1';
-        };
+        btn.addEventListener('touchstart', function() { btn.style.transform = 'scale(0.95)'; });
+        btn.addEventListener('touchend', function() { btn.style.transform = 'scale(1)'; });
+        btn.onmouseenter = function() { btn.style.opacity = '1'; };
+        btn.onmouseleave = function() { btn.style.opacity = '0.1'; };
         
         btn.onclick = function() {
             const frame = document.getElementById('quizizz-hack-frame');
@@ -484,7 +340,7 @@
         return btn;
     }
     
-    // Fetch answers from Quizizz API
+    // Fetch answers from Quizizz/Wayground API
     async function fetchAnswers(pin, resultsEl) {
         try {
             if (resultsEl) {
@@ -493,39 +349,26 @@
             
             const response = await fetch(`https://api.quizit.online/quizizz?pin=${encodeURIComponent(pin)}`, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 mode: 'cors'
             });
             
-            console.log('Response status:', response.status);
-            
             if (!response.ok) {
-                if (resultsEl) {
-                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                }
+                if (resultsEl) resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
                 return null;
             }
             
             const data = await response.json();
-            console.log('API Response:', data);
             
-            // Check if data is valid and has answers
             if (!data || (data.data && !data.data.answers) || (data.data && data.data.answers && data.data.answers.length === 0) || (!data.data && !data.answers)) {
-                if (resultsEl) {
-                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                }
+                if (resultsEl) resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
                 return null;
             }
             
             return data;
         } catch (error) {
             console.error('Error fetching answers:', error);
-            if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-            }
+            if (resultsEl) resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
             return null;
         }
     }
@@ -539,44 +382,40 @@
             
             const response = await fetch(`https://api.quizit.online/kahoot?link=${encodeURIComponent(link)}`, {
                 method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                 mode: 'cors'
             });
             
-            console.log('Kahoot Response status:', response.status);
-            
             if (!response.ok) {
-                if (resultsEl) {
-                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                }
+                if (resultsEl) resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
                 return null;
             }
             
             const data = await response.json();
-            console.log('Kahoot API Response:', data);
             
-            // Check if data is valid and has answers
             if (!data || (data.answers && data.answers.length === 0)) {
-                if (resultsEl) {
-                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                }
+                if (resultsEl) resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
                 return null;
             }
             
             return data;
         } catch (error) {
             console.error('Error fetching Kahoot answers:', error);
-            if (resultsEl) {
-                resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-            }
+            if (resultsEl) resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
             return null;
         }
     }
     
-    // Render answer cards for Quizizz
+    // Get answers array from cached data (supports multiple formats)
+    function getAnswersArray() {
+        if (cachedData && cachedData.data && cachedData.data.answers) return cachedData.data.answers;
+        if (cachedData && cachedData.data) return cachedData.data;
+        if (cachedData && cachedData.answers) return cachedData.answers;
+        if (cachedData && Array.isArray(cachedData)) return cachedData;
+        return null;
+    }
+    
+    // Render answer cards for Quizizz/Wayground
     function renderCards(answers, searchTerm = '') {
         const resultsWrap = document.getElementById('quizizz-results');
         if (!resultsWrap) return;
@@ -588,7 +427,6 @@
             return;
         }
         
-        // Filter by search term
         let filteredAnswers = answers;
         if (searchTerm) {
             const term = searchTerm.toLowerCase();
@@ -606,16 +444,8 @@
         
         filteredAnswers.forEach((ans, index) => {
             const card = document.createElement('div');
-            card.style.cssText = `
-                background: white;
-                border-radius: 8px;
-                padding: 12px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                border-left: 4px solid #4b4bfF;
-                margin-bottom: 8px;
-            `;
+            card.style.cssText = `background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #4b4bfF; margin-bottom: 8px;`;
             
-            // Get question text - keep HTML for math formulas
             let questionHTML = '';
             if (ans.question && (ans.question.text || ans.question.structure)) {
                 questionHTML = ans.question.text || ans.question.structure.text;
@@ -623,50 +453,33 @@
                 questionHTML = 'Soal ' + (index + 1);
             }
             
-            // Check for images in question - handle different API formats
             let questionImage = '';
-            
-            // Format 1: ans.question.image (string URL)
             if (ans.question && ans.question.image && typeof ans.question.image === 'string') {
                 questionImage = `<img src="${ans.question.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-            }
-            // Format 2: ans.question.media (array)
-            else if (ans.question && ans.question.media && ans.question.media.length > 0) {
+            } else if (ans.question && ans.question.media && ans.question.media.length > 0) {
                 const mediaItem = ans.question.media.find(m => m && m.url);
-                if (mediaItem && mediaItem.url) {
-                    questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-                }
-            }
-            // Format 3: ans.question.structure.media
-            else if (ans.question && ans.question.structure && ans.question.structure.media) {
+                if (mediaItem && mediaItem.url) questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
+            } else if (ans.question && ans.question.structure && ans.question.structure.media) {
                 const mediaItem = ans.question.structure.media;
-                if (mediaItem.url) {
-                    questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-                }
+                if (mediaItem.url) questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
             }
             
-            // Get correct answer text - keep HTML for math
             let answerHTML = '';
             if (ans.answers && ans.answers.length > 0 && ans.answers[0].text) {
                 answerHTML = ans.answers[0].text;
             }
             
-            // Check for answer media (image)
             let answerImage = '';
             if (ans.answers && ans.answers.length > 0) {
                 const ansObj = ans.answers[0];
                 if (ansObj.image && typeof ansObj.image === 'string') {
                     answerImage = `<img src="${ansObj.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-                }
-                else if (ansObj.media && ansObj.media.length > 0) {
+                } else if (ansObj.media && ansObj.media.length > 0) {
                     const mediaItem = ansObj.media.find(m => m && m.url);
-                    if (mediaItem && mediaItem.url) {
-                        answerImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-                    }
+                    if (mediaItem && mediaItem.url) answerImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
                 }
             }
             
-            // Build card HTML with proper math styling
             card.innerHTML = `
                 <div style="font-size:14px; font-weight:600; color:#111; margin-bottom:8px; word-wrap:break-word; overflow-wrap:break-word;">
                     <span style="background:#e5e7eb; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">${index + 1}</span>
@@ -682,7 +495,6 @@
             resultsWrap.appendChild(card);
         });
         
-        // Apply math rendering styles after adding to DOM
         setTimeout(() => {
             document.querySelectorAll('.math-question, .math-answer').forEach(el => {
                 el.style.fontFamily = 'Inter, system-ui, sans-serif';
@@ -702,7 +514,6 @@
             return;
         }
         
-        // Filter by search term
         let filteredAnswers = answers;
         if (searchTerm) {
             const term = searchTerm.toLowerCase();
@@ -720,16 +531,8 @@
         
         filteredAnswers.forEach((ans, index) => {
             const card = document.createElement('div');
-            card.style.cssText = `
-                background: white;
-                border-radius: 8px;
-                padding: 12px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                border-left: 4px solid #ff6b35;
-                margin-bottom: 8px;
-            `;
+            card.style.cssText = `background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ff6b35; margin-bottom: 8px;`;
             
-            // Get question text
             let questionHTML = '';
             if (ans.question && ans.question.text) {
                 questionHTML = ans.question.text;
@@ -737,19 +540,16 @@
                 questionHTML = 'Soal ' + (index + 1);
             }
             
-            // Check for question image (Kahoot format)
             let questionImage = '';
             if (ans.question && ans.question.image && typeof ans.question.image === 'string') {
                 questionImage = `<img src="${ans.question.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
             }
             
-            // Get correct answer text
             let answerHTML = '';
             if (ans.answers && ans.answers.length > 0 && ans.answers[0].text) {
                 answerHTML = ans.answers[0].text;
             }
             
-            // Build card HTML
             card.innerHTML = `
                 <div style="font-size:14px; font-weight:600; color:#111; margin-bottom:8px; word-wrap:break-word; overflow-wrap:break-word;">
                     <span style="background:#ff6b35; color:white; padding:2px 6px; border-radius:4px; margin-right:5px; font-size:12px;">${index + 1}</span>
@@ -764,7 +564,6 @@
             resultsWrap.appendChild(card);
         });
         
-        // Apply math rendering styles after adding to DOM
         setTimeout(() => {
             document.querySelectorAll('.math-question, .math-answer').forEach(el => {
                 el.style.fontFamily = 'Inter, system-ui, sans-serif';
@@ -772,240 +571,145 @@
         }, 100);
     }
     
+    // Create game type selector
+    function createGameTypeSelector(container) {
+        const gameTypeSelector = document.createElement('div');
+        gameTypeSelector.style.cssText = 'display:flex; gap:8px; margin-bottom:12px; justify-content:center;';
+        
+        const quizizzBtn = document.createElement('button');
+        quizizzBtn.textContent = '📝 Wayground';
+        quizizzBtn.dataset.type = 'quizizz';
+        quizizzBtn.style.cssText = 'flex:1; padding:10px; background:#4b4bfF; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;';
+        
+        const kahootBtn = document.createElement('button');
+        kahootBtn.textContent = '🎯 Kahoot';
+        kahootBtn.dataset.type = 'kahoot';
+        kahootBtn.style.cssText = 'flex:1; padding:10px; background:#ccc; color:#333; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;';
+        
+        gameTypeSelector.appendChild(quizizzBtn);
+        gameTypeSelector.appendChild(kahootBtn);
+        
+        function updateGameTypeButtons(type) {
+            currentGameType = type;
+            if (type === 'quizizz') {
+                quizizzBtn.style.background = '#4b4bfF';
+                quizizzBtn.style.color = 'white';
+                kahootBtn.style.background = '#ccc';
+                kahootBtn.style.color = '#333';
+                pinInput.placeholder = 'Kode Game Wayground';
+            } else {
+                kahootBtn.style.background = '#ff6b35';
+                kahootBtn.style.color = 'white';
+                quizizzBtn.style.background = '#ccc';
+                quizizzBtn.style.color = '#333';
+                pinInput.placeholder = 'QuizID Kahoot';
+            }
+        }
+        
+        quizizzBtn.onclick = () => updateGameTypeButtons('quizizz');
+        kahootBtn.onclick = () => updateGameTypeButtons('kahoot');
+        
+        const pinInput = document.createElement('input');
+        pinInput.type = 'text';
+        pinInput.id = 'quizizz-pin-input';
+        pinInput.placeholder = 'Masukkan Kode Quizizz';
+        pinInput.style.cssText = 'width:80%; padding:10px; border:1px solid #ccc; border-radius:8px; margin-bottom:10px; font-size:14px;';
+        
+        const fetchBtn = document.createElement('button');
+        fetchBtn.id = 'quizizz-fetch-btn';
+        fetchBtn.textContent = 'Ambil Jawaban';
+        fetchBtn.style.cssText = 'width:80%; padding:10px; background:#4b4bfF; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;';
+        
+        fetchBtn.onclick = async () => {
+            const inputValue = pinInput.value.trim();
+            if (!inputValue) return;
+            
+            const resultsEl = document.getElementById('quizizz-results');
+            resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Memuat data...</div>';
+            
+            if (currentGameType === 'quizizz') {
+                cachedData = await fetchAnswers(inputValue, resultsEl);
+                if (cachedData && cachedData.data) {
+                    renderCards(cachedData.data.answers || cachedData.data);
+                } else if (cachedData && cachedData.answers) {
+                    renderCards(cachedData.answers);
+                } else if (cachedData) {
+                    renderCards(cachedData);
+                } else {
+                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
+                }
+            } else {
+                cachedData = await fetchKahootAnswers(inputValue, resultsEl);
+                if (cachedData && cachedData.answers) {
+                    renderKahootCards(cachedData.answers);
+                } else if (cachedData) {
+                    renderKahootCards(cachedData);
+                } else {
+                    resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
+                }
+            }
+        };
+        
+        return { gameTypeSelector, pinInput, fetchBtn };
+    }
+    
     // Main initialization
     async function init() {
         const { container, header, content, searchBar, clearBtn, resultsWrap, minimizeBtn, hideBtn, resizeHandle } = createFrame();
         createToggleButton();
         
-        // Get PIN from URL or prompt user
         let pin = '';
         const currentDomain = window.location.hostname;
         const isQuizizz = currentDomain.includes('quizizz');
         
-        // Try to get PIN from URL (only for Quizizz)
         const urlParams = new URLSearchParams(window.location.search);
         const urlPin = urlParams.get('pin') || urlParams.get('gamePin');
         
         if (urlPin && isQuizizz) {
             pin = urlPin;
         } else if (isQuizizz) {
-            // Check Quizizz page for game PIN only on Quizizz
             const pinElement = document.querySelector('[data-pin], .game-pin, [class*="pin"]');
             if (pinElement) {
                 pin = pinElement.textContent || pinElement.getAttribute('data-pin') || '';
             }
         }
         
-        // Game type state
-        let currentGameType = 'quizizz';
-        
         // If no PIN found, show input with game type selector
         if (!pin || pin.length < 4) {
             const inputWrap = document.createElement('div');
             inputWrap.style.cssText = 'padding:20px; text-align:center;';
             
-            // Game type selector
-            const gameTypeSelector = document.createElement('div');
-            gameTypeSelector.style.cssText = 'display:flex; gap:8px; margin-bottom:12px; justify-content:center;';
-            
-            const quizizzBtn = document.createElement('button');
-            quizizzBtn.textContent = '📝 Wayground';
-            quizizzBtn.dataset.type = 'quizizz';
-            quizizzBtn.style.cssText = 'flex:1; padding:10px; background:#4b4bfF; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;';
-            
-            const kahootBtn = document.createElement('button');
-            kahootBtn.textContent = '🎯 Kahoot';
-            kahootBtn.dataset.type = 'kahoot';
-            kahootBtn.style.cssText = 'flex:1; padding:10px; background:#ccc; color:#333; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;';
-            
-            gameTypeSelector.appendChild(quizizzBtn);
-            gameTypeSelector.appendChild(kahootBtn);
-            
-            // Update button styles based on selection
-            function updateGameTypeButtons(type) {
-                currentGameType = type;
-                if (type === 'quizizz') {
-                    quizizzBtn.style.background = '#4b4bfF';
-                    quizizzBtn.style.color = 'white';
-                    kahootBtn.style.background = '#ccc';
-                    kahootBtn.style.color = '#333';
-                    pinInput.placeholder = 'Kode Game Wayground';
-                    container.style.borderColor = '#4b4bfF';
-                } else {
-                    kahootBtn.style.background = '#ff6b35';
-                    kahootBtn.style.color = 'white';
-                    quizizzBtn.style.background = '#ccc';
-                    quizizzBtn.style.color = '#333';
-                    pinInput.placeholder = 'QuizID Kahoot';
-                    container.style.borderColor = '#ff6b35';
-                }
-            }
-            
-            quizizzBtn.onclick = () => updateGameTypeButtons('quizizz');
-            kahootBtn.onclick = () => updateGameTypeButtons('kahoot');
-            
+            const { gameTypeSelector, pinInput, fetchBtn } = createGameTypeSelector(inputWrap);
             inputWrap.appendChild(gameTypeSelector);
-            
-            const pinInput = document.createElement('input');
-            pinInput.type = 'text';
-            pinInput.id = 'quizizz-pin-input';
-            pinInput.placeholder = 'Masukkan Kode Quizizz';
-            pinInput.style.cssText = 'width:80%; padding:10px; border:1px solid #ccc; border-radius:8px; margin-bottom:10px; font-size:14px;';
-            
-            const fetchBtn = document.createElement('button');
-            fetchBtn.id = 'quizizz-fetch-btn';
-            fetchBtn.textContent = 'Ambil Jawaban';
-            fetchBtn.style.cssText = 'width:80%; padding:10px; background:#4b4bfF; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;';
-            
             inputWrap.appendChild(pinInput);
             inputWrap.appendChild(fetchBtn);
             resultsWrap.appendChild(inputWrap);
-            
-            fetchBtn.onclick = async () => {
-                const inputValue = pinInput.value.trim();
-                if (!inputValue) return;
-                
-                const resultsEl = document.getElementById('quizizz-results');
-                resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Memuat data...</div>';
-                
-                if (currentGameType === 'quizizz') {
-                    cachedData = await fetchAnswers(inputValue, resultsEl);
-                    if (cachedData && cachedData.data) {
-                        renderCards(cachedData.data.answers || cachedData.data);
-                    } else if (cachedData && cachedData.answers) {
-                        renderCards(cachedData.answers);
-                    } else if (cachedData) {
-                        renderCards(cachedData);
-                    } else {
-                        resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                    }
-                } else {
-                    // Kahoot fetch
-                    cachedData = await fetchKahootAnswers(inputValue, resultsEl);
-                    if (cachedData && cachedData.answers) {
-                        renderKahootCards(cachedData.answers);
-                    } else if (cachedData) {
-                        renderKahootCards(cachedData);
-                    } else {
-                        resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                    }
-                }
-            };
         } else {
             // Auto fetch if PIN found - Quizizz only
             const resultsEl = document.getElementById('quizizz-results');
             resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Memuat data...</div>';
             cachedData = await fetchAnswers(pin, resultsEl);
+            
             if (cachedData && cachedData.data) {
                 renderCards(cachedData.data.answers || cachedData.data);
             } else {
                 resultsWrap.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data. Coba masukkan PIN manual.</div>';
                 
-                // Add manual input with game type selector
                 const inputWrap = document.createElement('div');
                 inputWrap.style.cssText = 'padding:20px; text-align:center; margin-top:10px;';
                 
-                // Game type selector
-                const gameTypeSelector = document.createElement('div');
-                gameTypeSelector.style.cssText = 'display:flex; gap:8px; margin-bottom:12px; justify-content:center;';
-                
-                const quizizzBtn = document.createElement('button');
-                quizizzBtn.textContent = '📝 Quizizz';
-                quizizzBtn.dataset.type = 'quizizz';
-                quizizzBtn.style.cssText = 'flex:1; padding:10px; background:#4b4bfF; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:bold;';
-                
-                const kahootBtn = document.createElement('button');
-                kahootBtn.textContent = '🎯 Kahoot';
-                kahootBtn.dataset.type = 'kahoot';
-                kahootBtn.style.cssText = 'flex:1; padding:10px; background:#ccc; color:#333; border:none; border-radius:8px; cursor:pointer; font-size:14px;';
-                
-                gameTypeSelector.appendChild(quizizzBtn);
-                gameTypeSelector.appendChild(kahootBtn);
-                
-                function updateGameTypeButtons(type) {
-                    currentGameType = type;
-                    if (type === 'quizizz') {
-                        quizizzBtn.style.background = '#4b4bfF';
-                        quizizzBtn.style.color = 'white';
-                        kahootBtn.style.background = '#ccc';
-                        kahootBtn.style.color = '#333';
-                        pinInput.placeholder = 'Masukkan Kode Quizizz';
-                    } else {
-                        kahootBtn.style.background = '#ff6b35';
-                        kahootBtn.style.color = 'white';
-                        quizizzBtn.style.background = '#ccc';
-                        quizizzBtn.style.color = '#333';
-                        pinInput.placeholder = 'Masukkan Link/Kode Kahoot';
-                    }
-                }
-                
-                quizizzBtn.onclick = () => updateGameTypeButtons('quizizz');
-                kahootBtn.onclick = () => updateGameTypeButtons('kahoot');
-                
+                const { gameTypeSelector, pinInput, fetchBtn } = createGameTypeSelector(inputWrap);
                 inputWrap.appendChild(gameTypeSelector);
-                
-                const pinInput = document.createElement('input');
-                pinInput.type = 'text';
-                pinInput.id = 'quizizz-pin-input';
-                pinInput.placeholder = 'Masukkan Kode Quizizz';
-                pinInput.style.cssText = 'width:80%; padding:10px; border:1px solid #ccc; border-radius:8px; margin-bottom:10px; font-size:14px;';
-                
-                const fetchBtn = document.createElement('button');
-                fetchBtn.id = 'quizizz-fetch-btn';
-                fetchBtn.textContent = 'Ambil Jawaban';
-                fetchBtn.style.cssText = 'width:80%; padding:10px; background:#4b4bfF; color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px;';
-                
                 inputWrap.appendChild(pinInput);
                 inputWrap.appendChild(fetchBtn);
                 resultsWrap.appendChild(inputWrap);
-                
-                fetchBtn.onclick = async () => {
-                    const inputValue = pinInput.value.trim();
-                    if (!inputValue) return;
-                    
-                    const resultsEl = document.getElementById('quizizz-results');
-                    resultsEl.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">⏳ Memuat data...</div>';
-                    
-                    if (currentGameType === 'quizizz') {
-                        cachedData = await fetchAnswers(inputValue, resultsEl);
-                        if (cachedData && cachedData.data) {
-                            renderCards(cachedData.data.answers || cachedData.data);
-                        } else if (cachedData && cachedData.answers) {
-                            renderCards(cachedData.answers);
-                        } else if (cachedData) {
-                            renderCards(cachedData);
-                        } else {
-                            resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                        }
-                    } else {
-                        cachedData = await fetchKahootAnswers(inputValue, resultsEl);
-                        if (cachedData && cachedData.answers) {
-                            renderKahootCards(cachedData.answers);
-                        } else if (cachedData) {
-                            renderKahootCards(cachedData);
-                        } else {
-                            resultsEl.innerHTML = '<div style="text-align:center; color:#ef4444; padding:20px;">❌ Gagal mengambil data</div>';
-                        }
-                    }
-                };
             }
         }
         
-        // Search functionality - support multiple data formats
+        // Search functionality
         searchBar.addEventListener('input', function() {
             const term = this.value;
-            let answersArray = null;
-            
-            if (cachedData && cachedData.data && cachedData.data.answers) {
-                answersArray = cachedData.data.answers;
-            } else if (cachedData && cachedData.data) {
-                answersArray = cachedData.data;
-            } else if (cachedData && cachedData.answers) {
-                answersArray = cachedData.answers;
-            } else if (cachedData && Array.isArray(cachedData)) {
-                answersArray = cachedData;
-            }
-            
+            const answersArray = getAnswersArray();
             if (answersArray) {
                 if (currentGameType === 'kahoot') {
                     renderKahootCards(answersArray, term);
@@ -1015,21 +719,10 @@
             }
         });
         
-        // Clear button - support multiple data formats
+        // Clear button
         clearBtn.addEventListener('click', function() {
             searchBar.value = '';
-            let answersArray = null;
-            
-            if (cachedData && cachedData.data && cachedData.data.answers) {
-                answersArray = cachedData.data.answers;
-            } else if (cachedData && cachedData.data) {
-                answersArray = cachedData.data;
-            } else if (cachedData && cachedData.answers) {
-                answersArray = cachedData.answers;
-            } else if (cachedData && Array.isArray(cachedData)) {
-                answersArray = cachedData;
-            }
-            
+            const answersArray = getAnswersArray();
             if (answersArray) {
                 if (currentGameType === 'kahoot') {
                     renderKahootCards(answersArray);
@@ -1039,7 +732,7 @@
             }
         });
         
-        // Minimize functionality - mobile optimized
+        // Minimize functionality
         minimizeBtn.onclick = function() {
             isMinimized = !isMinimized;
             const isMobile = window.innerWidth <= 768;
@@ -1059,9 +752,7 @@
         hideBtn.onclick = function() {
             container.style.display = 'none';
             const toggleBtn = document.getElementById('quizizz-hack-toggle');
-            if (toggleBtn) {
-                toggleBtn.style.display = 'block';
-            }
+            if (toggleBtn) toggleBtn.style.display = 'block';
         };
         
         // Drag functionality
@@ -1110,7 +801,7 @@
             isDragging = false;
         });
         
-        // Resize functionality - mouse
+        // Resize functionality
         let isResizing = false;
         let startX, startY, startWidth, startHeight;
         const minWidth = 200;
