@@ -11,24 +11,18 @@
 
     // License configuration
     const LICENSE_CONFIG = {
-        licenseFile: 'https://dithackvip.vercel.app/xditt4gt.json'
+        licenseFile: 'https://adithyawijaya.github.io/DitHack-Script/xditt4gt.json'
     };
 
     // Validate license against JSON file
     async function validateLicense(licenseCode) {
         try {
-            // Add cache-busting query parameter
-            const cacheBuster = '_cb=' + Date.now() + Math.random().toString(36).substring(7);
-            const licenseUrl = LICENSE_CONFIG.licenseFile + (LICENSE_CONFIG.licenseFile.includes('?') ? '&' : '?') + cacheBuster;
+            // Add cache-busting query parameter to prevent browser disk cache
+            const cacheBuster = '_t=' + Date.now();
+            const licenseUrl = LICENSE_CONFIG.licenseFile + '?' + cacheBuster;
             
-            // Fetch license.json with cache-busting headers
+            // Fetch license.json with no-store to prevent caching
             const response = await fetch(licenseUrl, {
-                method: 'GET',
-                headers: {
-                    'Cache-Control': 'no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache',
-                    'Expires': '0'
-                },
                 cache: 'no-store'
             });
             
@@ -1061,5 +1055,3 @@
 
     console.log('✅ DitHack loaded!');
 })();
-
-
