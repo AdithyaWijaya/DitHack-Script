@@ -11,7 +11,7 @@
 
     // License configuration
     const LICENSE_CONFIG = {
-        licenseFile: 'https://adithyawijaya.github.io/DitHack-Script/xditt4gt.json'
+        licenseFile: 'https://dithackvip.vercel.app/xditt4gt.json'
     };
 
     // Validate license against JSON file
@@ -21,7 +21,7 @@
             const response = await fetch(LICENSE_CONFIG.licenseFile);
             
             if (!response.ok) {
-                return { valid: false, message: 'Gagal memuat file lisensi. Hubungi admin!' };
+                return { valid: false, message: 'Gagal memuat Token. Hubungi admin!' };
             }
             
             const licenseData = await response.json();
@@ -31,11 +31,11 @@
             const license = licenses.find(l => l.code === licenseCode);
             
             if (!license) {
-                return { valid: false, message: 'Kode lisensi tidak valid!' };
+                return { valid: false, message: 'Token tidak valid!' };
             }
             
             if (!license.active) {
-                return { valid: false, message: 'Lisensi sudah tidak aktif!' };
+                return { valid: false, message: 'Token sudah tidak aktif!' };
             }
             
             // Check expiration
@@ -43,14 +43,14 @@
             const now = new Date();
             
             if (expiryDate < now) {
-                return { valid: false, message: 'Lisensi sudah expired pada ' + license.expired };
+                return { valid: false, message: 'Token sudah expired pada ' + license.expired };
             }
             
             return { valid: true, message: 'Selamat datang ' + license.owner + '!', owner: license.owner };
             
         } catch (error) {
             console.error('[License] Validation error:', error);
-            return { valid: false, message: 'Error validasi lisensi. Pastikan terhubung internet!' };
+            return { valid: false, message: 'Error validasi Token. Pastikan terhubung internet!' };
         }
     }
 
@@ -141,7 +141,7 @@
         submitBtn.onclick = async () => {
             const code = input.value.trim();
             if (!code) {
-                message.textContent = 'Masukkan kode lisensi terlebih dahulu!';
+                message.textContent = 'Masukkan kode Token terlebih dahulu!';
                 message.style.color = '#ff6b6b';
                 return;
             }
@@ -1049,4 +1049,3 @@
 
     console.log('✅ DitHack loaded!');
 })();
-
