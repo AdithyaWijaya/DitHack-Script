@@ -4,7 +4,193 @@
 
 (function() {
     'use strict';
-    
+
+    // =====================================================
+    // LICENSE SYSTEM
+    // =====================================================
+
+    // License configuration
+    const LICENSE_CONFIG = {
+        licenseFile: 'xditt4gt.json'
+    };
+
+    // Validate license against JSON file
+    async function validateLicense(licenseCode) {
+        try {
+            // Fetch license.json from GitHub Pages
+            const response = await fetch(LICENSE_CONFIG.licenseFile);
+            
+            if (!response.ok) {
+                return { valid: false, message: 'Gagal memuat file lisensi. Hubungi admin!' };
+            }
+            
+            const licenseData = await response.json();
+            const licenses = licenseData.licenses || [];
+            
+            // Find matching license
+            const license = licenses.find(l => l.code === licenseCode);
+            
+            if (!license) {
+                return { valid: false, message: 'Kode lisensi tidak valid!' };
+            }
+            
+            if (!license.active) {
+                return { valid: false, message: 'Lisensi sudah tidak aktif!' };
+            }
+            
+            // Check expiration
+            const expiryDate = new Date(license.expired);
+            const now = new Date();
+            
+            if (expiryDate < now) {
+                return { valid: false, message: 'Lisensi sudah expired pada ' + license.expired };
+            }
+            
+            return { valid: true, message: 'Selamat datang ' + license.owner + '!', owner: license.owner };
+            
+        } catch (error) {
+            console.error('[License] Validation error:', error);
+            return { valid: false, message: 'Error validasi lisensi. Pastikan terhubung internet!' };
+        }
+    }
+
+    // Create license modal GUI
+    function createLicenseModal() {
+        // Remove existing modal if any
+        const existingModal = document.getElementById('dithack-license-modal');
+        if (existingModal) existingModal.remove();
+
+        // Detect mobile
+        const isMobile = window.innerWidth <= 480;
+        
+        // Dynamic sizing based on device
+        const padding = isMobile ? '16px' : '20px';
+        const titleSize = isMobile ? '18px' : '20px';
+        const fontSize = isMobile ? '12px' : '13px';
+        const inputPadding = isMobile ? '8px 10px' : '10px 12px';
+        const buttonPadding = isMobile ? '8px' : '10px';
+        const marginBottom = isMobile ? '8px' : '10px';
+        const messageMarginTop = isMobile ? '4px' : '6px';
+        const infoMarginTop = isMobile ? '6px' : '8px';
+        const titleMarginBottom = isMobile ? '12px' : '14px';
+
+        const overlay = document.createElement('div');
+        overlay.id = 'dithack-license-modal';
+        overlay.style.cssText = `
+            position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+            background: rgba(0, 0, 0, 0.85) !important; display: flex !important; align-items: center !important;
+            justify-content: center !important; z-index: 9999999 !important; font-family: 'Segoe UI', Inter, system-ui, sans-serif !important;
+            padding: 10px !important;
+        `;
+
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: #ffffff !important;
+            padding: ${padding} !important; border-radius: 10px !important; text-align: center !important;
+            max-width: 350px !important; width: 90% !important; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid #ddd !important; height: auto !important; min-height: auto !important;
+        `;
+
+        // Title
+        const title = document.createElement('h2');
+        title.textContent = 'DitHack! VIP';
+        title.style.cssText = `color: #333 !important; margin: 0 0 ${titleMarginBottom} 0 !important; font-size: ${titleSize} !important; font-weight: bold !important;`;
+
+        // License input
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'dithack-license-input';
+        input.placeholder = 'Token Anda';
+        input.style.cssText = `
+            width: 100% !important; padding: ${inputPadding} !important; border-radius: 6px !important;
+            border: 1px solid #000 !important; background: #fff !important;
+            color: #333 !important; font-size: ${fontSize} !important; outline: none !important;
+            box-sizing: border-box !important; margin-bottom: ${marginBottom} !important; text-align: center !important;
+        `;
+
+        // Message area
+        const message = document.createElement('div');
+        message.id = 'dithack-license-message';
+        message.style.cssText = `color: #d00 !important; font-size: ${fontSize} !important; margin-top: ${messageMarginTop} !important; min-height: 20px !important;`;
+
+        // Submit button
+        const submitBtn = document.createElement('button');
+        submitBtn.textContent = 'Login';
+        submitBtn.id = 'dithack-license-submit';
+        submitBtn.style.cssText = `
+            width: 100% !important; padding: ${buttonPadding} !important; border-radius: 6px !important;
+            border: none !important; background: #0066ff !important;
+            color: white !important; font-size: ${fontSize} !important; font-weight: bold !important;
+            cursor: pointer !important;
+        `;
+
+        // Info text
+        const infoText = document.createElement('p');
+        infoText.innerHTML = 'Belum punya token? <a href="https://dithackvip.vercel.app" target="_blank" style="color: #4b4bfF; text-decoration: none;">Beli di sini</a>';
+        infoText.style.cssText = `color: #666 !important; font-size: ${isMobile ? '11px' : '12px'} !important; margin-top: ${infoMarginTop} !important;`;
+
+        modal.appendChild(title);
+        modal.appendChild(input);
+        modal.appendChild(submitBtn);
+        modal.appendChild(message);
+        modal.appendChild(infoText);
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+        // Handle submit
+        submitBtn.onclick = async () => {
+            const code = input.value.trim();
+            if (!code) {
+                message.textContent = 'Masukkan kode lisensi terlebih dahulu!';
+                message.style.color = '#ff6b6b';
+                return;
+            }
+
+            submitBtn.textContent = 'Memvalidasi...';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            const result = await validateLicense(code);
+
+            if (result.valid) {
+                message.textContent = '✓ ' + result.message;
+                message.style.color = '#00aa00';
+                submitBtn.textContent = '✓ Aktif!';
+                submitBtn.style.background = '#008800';
+                
+                setTimeout(() => {
+                    overlay.remove();
+                    // Initialize main app after valid license
+                    initMainApp();
+                }, 1500);
+            } else {
+                message.textContent = '✗ ' + result.message;
+                message.style.color = '#ff6b6b';
+                submitBtn.textContent = 'Login';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+        };
+
+        // Enter key support
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+
+        // Focus input
+        setTimeout(() => input.focus(), 100);
+
+        return overlay;
+    }
+
+    // Check license on startup - always require input
+    function checkLicense() {
+        // Always show license modal - user must enter code each time
+        createLicenseModal();
+    }
+
     // =====================================================
     // PART 1: DETECTION BYPASS
     // =====================================================
@@ -307,32 +493,30 @@
         
         const btn = document.createElement('button');
         btn.id = 'quizizz-hack-toggle';
-        btn.textContent = '📝';
+        btn.textContent = '👑';
         
         btn.style.cssText = `
             position: fixed !important; bottom: 20px !important; left: 20px !important;
-            padding: 12px 16px !important; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            padding: 12px 16px !important; background: #800080 !important;
             color: white !important; border: none !important; border-radius: 50px !important;
             cursor: pointer !important; z-index: 999998 !important; font-weight: bold !important;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
-            font-family: Inter, system-ui, sans-serif !important; opacity: 0.1 !important;
+            box-shadow: 0 4px 15px rgba(128, 0, 128, 0.4) !important;
+            font-family: Inter, system-ui, sans-serif !important; opacity: 0 !important;
             transition: opacity 0.3s ease, transform 0.2s ease !important; font-size: 18px !important;
             width: 50px !important; max-width: 50px !important; min-width: 50px !important;
             height: 50px !important; max-height: 50px !important; min-height: 50px !important;
-            display: flex !important; align-items: center !important; justify-content: center !important;
+            align-items: center !important; justify-content: center !important;
             box-sizing: border-box !important;
         `;
         
         btn.addEventListener('touchstart', function() { btn.style.transform = 'scale(0.95)'; });
         btn.addEventListener('touchend', function() { btn.style.transform = 'scale(1)'; });
-        btn.onmouseenter = function() { btn.style.opacity = '1'; };
-        btn.onmouseleave = function() { btn.style.opacity = '0.1'; };
         
         btn.onclick = function() {
             const frame = document.getElementById('quizizz-hack-frame');
             if (frame) {
                 frame.style.display = 'flex';
-                btn.style.display = 'none';
+                btn.style.opacity = '0';
             }
         };
         
@@ -653,8 +837,8 @@
         return { gameTypeSelector, pinInput, fetchBtn };
     }
     
-    // Main initialization
-    async function init() {
+    // Main initialization - called after license validation
+    async function initMainApp() {
         const { container, header, content, searchBar, clearBtn, resultsWrap, minimizeBtn, hideBtn, resizeHandle } = createFrame();
         createToggleButton();
         
@@ -752,7 +936,7 @@
         hideBtn.onclick = function() {
             container.style.display = 'none';
             const toggleBtn = document.getElementById('quizizz-hack-toggle');
-            if (toggleBtn) toggleBtn.style.display = 'block';
+            if (toggleBtn) toggleBtn.style.opacity = '0.1';
         };
         
         // Drag functionality
@@ -860,8 +1044,8 @@
         });
     }
     
-    // Run initialization
-    init();
+    // Run initialization - start with license check
+    checkLicense();
 
     console.log('✅ DitHack loaded!');
 })();

@@ -1,0 +1,46 @@
+{
+    "licenses": [
+        {
+            "code": "DIT-XDITT",
+            "owner": "Adithya",
+            "expired": "2026-03-11",
+            "active": true
+        },
+        {
+            "code": "DIT-L4IS5",
+            "owner": "Yuri",
+            "expired": "2026-03-11",
+            "active": true
+        },
+        {
+            "code": "DIT-W1LLS",
+            "owner": "Wildan",
+            "expired": "2026-03-09",
+            "active": true
+        },
+        {
+            "code": "DIT-STN1Y",
+            "owner": "Stanley",
+            "expired": "2026-03-11",
+            "active": true
+        },
+        {
+            "code": "DIT-Y4SAM",
+            "owner": "Naren",
+            "expired": "2026-03-11",
+            "active": true
+        },
+        {
+            "code": "DIT-R1YUG",
+            "owner": "Riyu",
+            "expired": "2026-03-11",
+            "active": true
+        },
+        {
+            "code": "DIT-JAWAI",
+            "owner": "Pudja",
+            "expired": "2026-03-09",
+            "active": true
+        }
+    ]
+}
