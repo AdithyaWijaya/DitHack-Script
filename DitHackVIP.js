@@ -11,7 +11,7 @@
 
     // License configuration
     const LICENSE_CONFIG = {
-        licenseFile: 'https://adithyawijaya.github.io/DitHack-Script/xditt4gt.json'
+        licenseFile: 'https://dithackvip.vercel.app/xditt4gt.json'
     };
 
     // Validate license against JSON file
@@ -622,7 +622,7 @@
             const term = searchTerm.toLowerCase();
             filteredAnswers = answers.filter(ans => {
                 const questionText = (ans.question && (ans.question.text || ans.question.structure && ans.question.structure.text)) ? (ans.question.text || ans.question.structure.text).replace(/<[^>]*>/g, '') : '';
-                const answerText = (ans.answers && ans.answers[0] && ans.answers[0].text) ? ans.answers[0].text.replace(/<[^>]*>/g, '') : '';
+                const answerText = (ans.answers && ans.answers.map(a => a.text).join(' ')) ? ans.answers.map(a => a.text).join(' ').replace(/<[^>]*>/g, '') : '';
                 return questionText.toLowerCase().includes(term) || answerText.toLowerCase().includes(term);
             });
         }
@@ -654,20 +654,43 @@
                 if (mediaItem.url) questionImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
             }
             
-            let answerHTML = '';
-            if (ans.answers && ans.answers.length > 0 && ans.answers[0].text) {
-                answerHTML = ans.answers[0].text;
-            }
-            
-            let answerImage = '';
+            // Handle MULTIPLE answers (MSQ) - show ALL correct answers without badge
+            // When answer has both text and image, show image first with text below
+            let answerContent = '';
+            // Green border style for answer images (always applied)
+            const answerImageBorderStyle = 'max-width:100%; border-radius:8px; margin-top:4px; border: 3px solid #22c55e;';
             if (ans.answers && ans.answers.length > 0) {
-                const ansObj = ans.answers[0];
-                if (ansObj.image && typeof ansObj.image === 'string') {
-                    answerImage = `<img src="${ansObj.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-                } else if (ansObj.media && ansObj.media.length > 0) {
-                    const mediaItem = ansObj.media.find(m => m && m.url);
-                    if (mediaItem && mediaItem.url) answerImage = `<img src="${mediaItem.url}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
-                }
+                ans.answers.forEach((ansObj, ansIndex) => {
+                    let textContent = '';
+                    let imageContent = '';
+                    
+                    // Add text if exists
+                    if (ansObj.text) {
+                        textContent = ansObj.text;
+                    }
+                    
+                    // Add image if exists (for each answer that has an image)
+                    if (ansObj.image && typeof ansObj.image === 'string') {
+                        imageContent = `<img src="${ansObj.image}" style="${answerImageBorderStyle}" onerror="this.style.display='none'">`;
+                    } else if (ansObj.media && ansObj.media.length > 0) {
+                        const mediaItem = ansObj.media.find(m => m && m.url);
+                        if (mediaItem && mediaItem.url) {
+                            imageContent = `<img src="${mediaItem.url}" style="${answerImageBorderStyle}" onerror="this.style.display='none'">`;
+                        }
+                    }
+                    
+                    // Combine: if both image and text exist, show image first then text below
+                    let combinedContent = '';
+                    if (imageContent && textContent) {
+                        combinedContent = imageContent + '<div style="margin-top:4px;">' + textContent + '</div>';
+                    } else if (imageContent) {
+                        combinedContent = imageContent;
+                    } else if (textContent) {
+                        combinedContent = textContent;
+                    }
+                    
+                    answerContent += (answerContent ? '<br>' : '') + combinedContent;
+                });
             }
             
             card.innerHTML = `
@@ -677,8 +700,7 @@
                     ${questionImage}
                 </div>
                 <div style="font-size:13px; color:#10b981; font-weight:bold; margin-top:8px; word-wrap:break-word; overflow-wrap:break-word;">
-                    <span class="math-answer">${answerHTML}</span>
-                    ${answerImage}
+                    <span class="math-answer">${answerContent}</span>
                 </div>
             `;
             
@@ -735,9 +757,36 @@
                 questionImage = `<img src="${ans.question.image}" style="max-width:100%; border-radius:8px; margin-top:8px;" onerror="this.style.display='none'">`;
             }
             
-            let answerHTML = '';
-            if (ans.answers && ans.answers.length > 0 && ans.answers[0].text) {
-                answerHTML = ans.answers[0].text;
+            let answerContent = '';
+            // Green border style for answer images (always applied)
+            const answerImageBorderStyle = 'max-width:100%; border-radius:8px; margin-top:4px; border: 3px solid #22c55e;';
+            if (ans.answers && ans.answers.length > 0) {
+                ans.answers.forEach((ansObj, ansIndex) => {
+                    let textContent = '';
+                    let imageContent = '';
+                    
+                    // Add text if exists
+                    if (ansObj.text) {
+                        textContent = ansObj.text;
+                    }
+                    
+                    // Add image if exists
+                    if (ansObj.image && typeof ansObj.image === 'string') {
+                        imageContent = `<img src="${ansObj.image}" style="${answerImageBorderStyle}" onerror="this.style.display='none'">`;
+                    }
+                    
+                    // Combine: if both image and text exist, show image first then text below
+                    let combinedContent = '';
+                    if (imageContent && textContent) {
+                        combinedContent = imageContent + '<div style="margin-top:4px;">' + textContent + '</div>';
+                    } else if (imageContent) {
+                        combinedContent = imageContent;
+                    } else if (textContent) {
+                        combinedContent = textContent;
+                    }
+                    
+                    answerContent += (answerContent ? '<br>' : '') + combinedContent;
+                });
             }
             
             card.innerHTML = `
@@ -747,7 +796,7 @@
                     ${questionImage}
                 </div>
                 <div style="font-size:13px; color:#10b981; font-weight:bold; margin-top:8px; word-wrap:break-word; overflow-wrap:break-word;">
-                    <span class="math-answer">${answerHTML}</span>
+                    <span class="math-answer">${answerContent}</span>
                 </div>
             `;
             
