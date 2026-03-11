@@ -1,4 +1,4 @@
-const pin = '00158336'; // Replace with your desired pin
+const pin = '16370414'; // Replace with your desired pin
 
 (async function () {
     // Function to fetch and categorize Quizizz answers using an API
