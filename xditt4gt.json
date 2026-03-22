@@ -1,69 +1,9 @@
 {
     "licenses": [
         {
-            "code": "DIT-XDITT",
+            "code": "DIT-4LEXX",
             "owner": "Adithya",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-L4IS5",
-            "owner": "Yuri",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-W1LLS",
-            "owner": "Wildan",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-STN1Y",
-            "owner": "Stanley",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-Y4SAM",
-            "owner": "Naren",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-R1YUG",
-            "owner": "Riyu",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-JIKZ7",
-            "owner": "USER",
-            "expired": "2026-03-30",
-            "active": true
-        },
-        {
-            "code": "DIT-JAWAI",
-            "owner": "JAWA",
-            "expired": "2026-03-09",
-            "active": true
-        },
-        {
-            "code": "DIT-R4HGY",
-            "owner": "Ngurah",
-            "expired": "2026-03-16",
-            "active": true
-        },
-        {
-            "code": "DIT-J3RRY",
-            "owner": "Roger",
-            "expired": "2026-03-16",
-            "active": true
-        },
-        {
-            "code": "DIT-N4RZZ",
-            "owner": "Nara",
-            "expired": "2026-03-16",
+            "expired": "2026-12-30",
             "active": true
         }
     ]
