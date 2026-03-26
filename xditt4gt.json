@@ -5,6 +5,30 @@
             "owner": "Adithya",
             "expired": "2026-12-30",
             "active": true
+        },
+        {
+            "code": "DIT-EKOPP",
+            "owner": "Eko Ajg",
+            "expired": "2026-01-30",
+            "active": true
+        },
+        {
+            "code": "DIT-Y4SAM",
+            "owner": "Suryanto",
+            "expired": "2026-12-30",
+            "active": false
+        },
+        {
+            "code": "DIT-XKEPX",
+            "owner": "Kepin",
+            "expired": "2025-12-15",
+            "active": false
+        },
+        {
+            "code": "DIT-ALOKS",
+            "owner": "ALOK",
+            "expired": "2026-12-15",
+            "active": true
         }
     ]
 }
