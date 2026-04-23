@@ -914,6 +914,8 @@
       isResizing = false;
     });
   }
-  
+
+  init();
+
   console.log("DitCheat loaded!");
 })();
