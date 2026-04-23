@@ -915,7 +915,7 @@
     });
   }
 
-  init();
+  initMainApp();
 
   console.log("DitCheat loaded!");
 })();
