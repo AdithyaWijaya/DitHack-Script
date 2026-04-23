@@ -914,9 +914,6 @@
       isResizing = false;
     });
   }
-
-  // Run initialization - start with license check
-  checkLicense();
-
+  
   console.log("DitCheat loaded!");
 })();
