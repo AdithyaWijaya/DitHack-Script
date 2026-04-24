@@ -185,7 +185,7 @@
             width: 50px !important; max-width: 50px !important; min-width: 50px !important;
             height: 50px !important; max-height: 50px !important; min-height: 50px !important;
             align-items: center !important; justify-content: center !important;
-            box-sizing: border-box !important;
+            box-sizing: border-box !important; display: flex !important; align-items: center !important; justify-content: center !important; line-height: 1 !important;
         `;
 
     btn.addEventListener("touchstart", function () {
