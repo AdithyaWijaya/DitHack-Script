@@ -10,7 +10,7 @@
 
   // License configuration
   const LICENSE_CONFIG = {
-    licenseFile: "https://dithack.vercel.app/xditt4gt.json",
+    licenseFile: "https://adithyawijaya.github.io/DitExamScript/xditt4gt.json",
   };
 
   // Validate license against JSON file
